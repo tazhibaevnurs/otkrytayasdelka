@@ -1,0 +1,79 @@
+{% if listings %}
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+  {% for listing in listings %}
+  <article class="listing-card flex flex-col h-full rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden hover:border-champagne/50 transition-all duration-300 hover-lift">
+    <a href="{% url 'listing_detail' listing.pk %}" class="block aspect-[4/3] bg-slate/30 relative overflow-hidden shrink-0">
+      <span class="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-lg text-xs font-medium {% if listing.listing_type == 'sale' %}bg-champagne/90 text-obsidian{% else %}bg-ivory/20 text-ivory border border-ivory/40{% endif %}">{% if listing.listing_type == 'sale' %}Продажа{% else %}Покупка{% endif %}</span>
+      {% if listing.image %}
+        <img src="{{ request.scheme }}://{{ request.get_host }}{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover opacity-95">
+      {% elif listing.image_url %}
+        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="w-full h-full object-cover opacity-95">
+      {% else %}
+        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="" class="w-full h-full object-cover opacity-95">
+      {% endif %}
+    </a>
+    <div class="p-5 sm:p-6 flex flex-col flex-1 min-h-0">
+      <a href="{% url 'listing_detail' listing.pk %}">
+        <h3 class="font-sans font-bold text-lg text-ivory mb-2 hover:text-champagne transition-colors line-clamp-2">{{ listing.title }}</h3>
+      </a>
+      <p class="text-ivory/70 text-sm flex items-center gap-2 mb-3 line-clamp-2">
+        <svg class="w-4 h-4 text-champagne/80 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        {{ listing.address }}
+      </p>
+      <div class="flex gap-4 text-sm text-ivory/70 mb-4">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-champagne/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          {{ listing.rooms }} комн.
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-champagne/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          {{ listing.area }} м²
+        </span>
+      </div>
+      <p class="font-mono text-champagne font-semibold mb-4">{{ listing.price }}</p>
+      <a href="{% url 'listing_detail' listing.pk %}" class="inline-flex items-center gap-2 text-sm font-medium text-champagne hover:text-ivory transition-colors mt-auto">
+        Узнать подробнее
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="rounded-2xl border border-champagne/30 bg-slate/20 p-12 text-center">
+  {% if has_filters %}
+    <p class="text-ivory/80">По вашим критериям ничего не найдено.</p>
+    <a href="{% url 'listing_list' %}" class="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] bg-champagne/20 text-champagne font-semibold border border-champagne/40 hover:bg-champagne/30 transition-colors">Сбросить фильтры</a>
+  {% else %}
+    <p class="text-ivory/80">В каталоге пока нет объектов.</p>
+    <a href="{% url 'contacts' %}" class="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] bg-champagne/20 text-champagne font-semibold border border-champagne/40 hover:bg-champagne/30 transition-colors">Связаться с нами</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if page_obj and page_obj.paginator.num_pages > 1 %}
+<nav class="mt-12 sm:mt-16 flex flex-wrap items-center justify-center gap-2" aria-label="Пагинация">
+  {% if page_obj.has_previous %}
+  <a href="{% if base_query %}?{{ base_query }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}" class="catalog-ajax-link inline-flex items-center justify-center w-10 h-10 rounded-xl border border-champagne/40 text-champagne hover:bg-champagne/10 transition-colors" aria-label="Назад">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </a>
+  {% endif %}
+  <div class="flex items-center gap-1">
+    {% for num in pagination_pages %}
+      {% if num == None %}
+    <span class="text-ivory/50 px-1">…</span>
+      {% elif page_obj.number == num %}
+    <span class="inline-flex items-center justify-center min-w-[2.5rem] h-10 px-3 rounded-xl bg-champagne text-obsidian font-semibold" aria-current="page">{{ num }}</span>
+      {% else %}
+    <a href="{% if base_query %}?{{ base_query }}&{% else %}?{% endif %}page={{ num }}" class="catalog-ajax-link inline-flex items-center justify-center min-w-[2.5rem] h-10 px-3 rounded-xl border border-champagne/40 text-ivory/90 hover:bg-champagne/10 transition-colors">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if page_obj.has_next %}
+  <a href="{% if base_query %}?{{ base_query }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}" class="catalog-ajax-link inline-flex items-center justify-center w-10 h-10 rounded-xl border border-champagne/40 text-champagne hover:bg-champagne/10 transition-colors" aria-label="Вперёд">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </a>
+  {% endif %}
+</nav>
+<p class="mt-4 text-center text-ivory/60 text-sm font-mono">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }} · всего {{ page_obj.paginator.count }} объектов</p>
+{% endif %}

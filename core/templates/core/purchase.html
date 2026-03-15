@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Покупка недвижимости{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative min-h-[70vh] flex flex-col justify-end overflow-hidden px-6 pb-20 sm:pb-28 pt-32">
+  <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ purchase_hero_url }}');"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-transparent"></div>
+  <div class="relative z-10 max-w-4xl">
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3">[ УСЛУГИ ]</p>
+    <h1 class="font-sans font-bold text-3xl sm:text-4xl lg:text-5xl text-champagne tracking-tighter mb-4 leading-tight">
+      Покупка недвижимости по<br>лучшим ценам
+    </h1>
+    <p class="text-ivory/80 text-lg mb-8 max-w-xl">Поможем подобрать объект, проверить документы и безопасно провести сделку до получения ключей.</p>
+    <a href="{% url 'contacts' %}" class="inline-flex items-center gap-2 px-8 py-4 rounded-[2rem] bg-champagne text-obsidian font-semibold btn-magnetic relative">
+      <span class="relative z-10">Получить бесплатную консультацию</span>
+      <span class="btn-slide bg-ivory/20"></span>
+    </a>
+  </div>
+</section>
+
+<!-- Почему мы: две колонки + анимация -->
+<section id="why-us" class="py-24 sm:py-32 px-6 bg-obsidian overflow-hidden">
+  <div class="max-w-6xl mx-auto">
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3 text-center">[ почему мы ]</p>
+    <h2 class="font-sans font-bold text-xl sm:text-2xl lg:text-3xl text-champagne tracking-tighter mb-6 text-center uppercase max-w-3xl mx-auto leading-tight">
+      Поможем купить квартиру по вашим предпочтениям
+    </h2>
+    <p class="text-ivory/80 text-center max-w-2xl mx-auto mb-14">Вам не нужно тратить время и искать подходящие варианты самостоятельно — мы подберём лучшие объекты по вашим пожеланиям.</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
+      <!-- Левая колонка -->
+      <div class="why-card rounded-2xl bg-slate/20 border border-champagne/30 p-6 sm:p-8 flex flex-col hover:border-champagne/50 transition-all duration-300">
+        <div class="rounded-2xl bg-champagne/10 p-4 w-12 h-12 flex items-center justify-center mb-4 shrink-0">
+          <svg class="w-6 h-6 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <h3 class="font-sans font-bold text-lg text-champagne mb-2">Поможем подобрать недвижимость</h3>
+        <p class="text-ivory/80 text-sm mb-4">Выгодные сделки</p>
+        <p class="text-ivory/80 text-sm leading-relaxed flex-1">Подберём для вас самый подходящий объект недвижимости и договоримся о самых оптимальных условиях.</p>
+      </div>
+
+      <!-- Правая колонка: две карточки друг под другом -->
+      <div class="flex flex-col gap-6 sm:gap-8">
+        <div class="why-card rounded-2xl bg-slate/20 border border-champagne/30 p-6 sm:p-8 flex flex-col hover:border-champagne/50 transition-all duration-300">
+          <div class="rounded-2xl bg-champagne/10 p-4 w-12 h-12 flex items-center justify-center mb-4 shrink-0">
+            <svg class="w-6 h-6 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <h3 class="font-sans font-bold text-lg text-champagne mb-2">Отсутствие рисков</h3>
+          <p class="text-ivory/80 text-sm leading-relaxed">Мы берём все этапы сделки на себя: тщательно проверим объект недвижимости и подготовим все необходимые документы.</p>
+        </div>
+        <div class="why-card rounded-2xl bg-slate/20 border border-champagne/30 p-6 sm:p-8 flex flex-col hover:border-champagne/50 transition-all duration-300">
+          <div class="rounded-2xl bg-champagne/10 p-4 w-12 h-12 flex items-center justify-center mb-4 shrink-0">
+            <svg class="w-6 h-6 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="font-sans font-bold text-lg text-champagne mb-2">Экономия времени</h3>
+          <p class="text-ivory/80 text-sm leading-relaxed">Ответьте на несколько вопросов — и мы подберём для вас подходящие варианты.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-12">
+      <a href="{% url 'contacts' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] bg-champagne/20 text-champagne border border-champagne/40 font-medium hover:bg-champagne/30 transition-colors">Заполнить анкету</a>
+    </div>
+  </div>
+</section>
+
+<!-- Этапы: горизонтальный поток шагов -->
+<section id="process-section" class="py-24 sm:py-32 px-6 bg-obsidian border-t border-champagne/10 overflow-hidden">
+  <div class="max-w-6xl mx-auto">
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3 text-center">[ этапы ]</p>
+    <h2 class="font-sans font-bold text-xl sm:text-2xl lg:text-3xl text-champagne tracking-tighter mb-4 text-center uppercase max-w-3xl mx-auto leading-tight">
+      Сопровождаем вас на всех этапах сделки
+    </h2>
+    <p class="text-ivory/60 text-center text-sm mb-12 sm:mb-16 max-w-xl mx-auto">От заявки до ключей — прозрачно и по шагам</p>
+
+    <!-- Десктоп: линия с номерами сверху -->
+    <div class="hidden lg:flex items-center justify-between mb-10 px-2">
+      <div class="process-dot flex-shrink-0 w-12 h-12 rounded-full bg-champagne/20 border-2 border-champagne/60 flex items-center justify-center font-mono font-bold text-champagne">1</div>
+      <div class="flex-1 h-0.5 bg-champagne/30 mx-1 process-line" style="transform: scaleX(0); transform-origin: left;"></div>
+      <div class="process-dot flex-shrink-0 w-12 h-12 rounded-full bg-champagne/20 border-2 border-champagne/60 flex items-center justify-center font-mono font-bold text-champagne">2</div>
+      <div class="flex-1 h-0.5 bg-champagne/30 mx-1 process-line" style="transform: scaleX(0); transform-origin: left;"></div>
+      <div class="process-dot flex-shrink-0 w-12 h-12 rounded-full bg-champagne/20 border-2 border-champagne/60 flex items-center justify-center font-mono font-bold text-champagne">3</div>
+      <div class="flex-1 h-0.5 bg-champagne/30 mx-1 process-line" style="transform: scaleX(0); transform-origin: left;"></div>
+      <div class="process-dot flex-shrink-0 w-12 h-12 rounded-full bg-champagne/20 border-2 border-champagne/60 flex items-center justify-center font-mono font-bold text-champagne">4</div>
+      <div class="flex-1 h-0.5 bg-champagne/30 mx-1 process-line" style="transform: scaleX(0); transform-origin: left;"></div>
+      <div class="process-dot flex-shrink-0 w-12 h-12 rounded-full bg-champagne/20 border-2 border-champagne/60 flex items-center justify-center font-mono font-bold text-champagne">5</div>
+    </div>
+
+    <!-- Карточки: 5 колонок на десктопе, вертикально на мобильных -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-4">
+      <div class="process-card rounded-2xl bg-slate/20 border border-champagne/30 p-5 sm:p-6 flex flex-col hover:border-champagne/50 transition-all duration-300">
+        <span class="lg:hidden inline-flex w-9 h-9 rounded-full bg-champagne/20 border border-champagne/50 items-center justify-center font-mono font-bold text-champagne text-sm mb-3 w-fit">1</span>
+        <h3 class="font-sans font-bold text-base lg:text-lg text-champagne mb-2">Подбор объектов</h3>
+        <p class="text-ivory/80 text-sm leading-relaxed flex-1">Подбираем объекты под ваши потребности, пожелания и бюджет.</p>
+      </div>
+      <div class="process-card rounded-2xl bg-slate/20 border border-champagne/30 p-5 sm:p-6 flex flex-col hover:border-champagne/50 transition-all duration-300">
+        <span class="lg:hidden inline-flex w-9 h-9 rounded-full bg-champagne/20 border border-champagne/50 items-center justify-center font-mono font-bold text-champagne text-sm mb-3 w-fit">2</span>
+        <h3 class="font-sans font-bold text-base lg:text-lg text-champagne mb-2">Просмотры объектов</h3>
+        <p class="text-ivory/80 text-sm leading-relaxed flex-1">Общение с продавцами берём на себя. Вам — приехать в согласованное время.</p>
+      </div>
+      <div class="process-card rounded-2xl bg-slate/20 border border-champagne/30 p-5 sm:p-6 flex flex-col hover:border-champagne/50 transition-all duration-300">
+        <span class="lg:hidden inline-flex w-9 h-9 rounded-full bg-champagne/20 border border-champagne/50 items-center justify-center font-mono font-bold text-champagne text-sm mb-3 w-fit">3</span>
+        <h3 class="font-sans font-bold text-base lg:text-lg text-champagne mb-2">Переговоры</h3>
+        <p class="text-ivory/80 text-sm leading-relaxed flex-1">Ведём переговоры с продавцом, договариваемся о выгодных условиях.</p>
+      </div>
+      <div class="process-card rounded-2xl bg-slate/20 border border-champagne/30 p-5 sm:p-6 flex flex-col hover:border-champagne/50 transition-all duration-300">
+        <span class="lg:hidden inline-flex w-9 h-9 rounded-full bg-champagne/20 border border-champagne/50 items-center justify-center font-mono font-bold text-champagne text-sm mb-3 w-fit">4</span>
+        <h3 class="font-sans font-bold text-base lg:text-lg text-champagne mb-2">Документы и расчёты</h3>
+        <p class="text-ivory/80 text-sm leading-relaxed flex-1">Проверяем документы, сопровождаем сделку и организуем расчёты.</p>
+      </div>
+      <div class="process-card rounded-2xl bg-slate/20 border border-champagne/30 p-5 sm:p-6 flex flex-col hover:border-champagne/50 transition-all duration-300">
+        <span class="lg:hidden inline-flex w-9 h-9 rounded-full bg-champagne/20 border border-champagne/50 items-center justify-center font-mono font-bold text-champagne text-sm mb-3 w-fit">5</span>
+        <h3 class="font-sans font-bold text-base lg:text-lg text-champagne mb-2">Услуга от OSK</h3>
+        <p class="text-ivory/80 text-sm leading-relaxed flex-1 mb-3">Услуга под ключ у партнёров OSK.</p>
+        <a href="https://osk.kg/#appeals" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-champagne font-medium text-sm hover:text-ivory transition-colors mt-auto">
+          Подробнее
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include 'includes/cta_consult.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Блок «Почему мы»: карточки слева и справа с анимацией
+  var whySection = document.getElementById('why-us');
+  var whyCards = document.querySelectorAll('.why-card');
+  if (whySection && whyCards.length) {
+    gsap.set(whyCards, { opacity: 0, y: 32 });
+    gsap.to(whyCards, {
+      opacity: 1,
+      y: 0,
+      duration: 0.7,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: whySection, start: 'top 85%', toggleActions: 'play none none none' }
+    });
+  }
+
+  // Секция «Этапы»: точки, линии, карточки
+  var processSection = document.getElementById('process-section');
+  var processCards = document.querySelectorAll('#process-section .process-card');
+  var processDots = document.querySelectorAll('.process-dot');
+  var processLines = document.querySelectorAll('.process-line');
+
+  if (processSection && processCards.length) {
+    gsap.set(processCards, { opacity: 0, y: 28 });
+    gsap.to(processCards, {
+      opacity: 1,
+      y: 0,
+      duration: 0.55,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: processSection, start: 'top 82%', toggleActions: 'play none none none' }
+    });
+  }
+
+  if (processSection && processDots.length) {
+    gsap.set(processDots, { scale: 0, opacity: 0 });
+    gsap.to(processDots, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.45,
+      stagger: 0.08,
+      ease: 'back.out(1.6)',
+      scrollTrigger: { trigger: processSection, start: 'top 82%', toggleActions: 'play none none none' }
+    });
+  }
+
+  if (processSection && processLines.length) {
+    gsap.to(processLines, {
+      scaleX: 1,
+      duration: 0.5,
+      stagger: 0.06,
+      ease: 'power2.out',
+      scrollTrigger: { trigger: processSection, start: 'top 80%', toggleActions: 'play none none none' }
+    });
+  }
+})();
+</script>
+{% endblock %}

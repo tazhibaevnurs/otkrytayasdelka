@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ listing.title }}{% endblock %}
+{% block meta_description %}{{ listing.title }}. {{ listing.address }}. {{ listing.rooms }} комн., {{ listing.area }} м². {{ listing.price }}. Агентство недвижимости Открытая Сделка.{% endblock %}
+{% block meta_keywords %}{{ listing.title }}, {{ listing.address }}, недвижимость, купить квартиру, продать квартиру, {{ listing.price }}{% endblock %}
+{% block og_image %}{{ gallery_images.0 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen">
+  <div class="max-w-4xl mx-auto">
+    <a href="{% url 'listing_list' %}" class="inline-flex items-center gap-2 text-ivory/70 hover:text-champagne transition-colors mb-8 text-sm">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Каталог
+    </a>
+
+    <!-- Галерея -->
+    <div class="rounded-2xl overflow-hidden border border-champagne/30 bg-slate/20 mb-8 relative" id="listing-gallery">
+      <div class="aspect-video bg-slate/30 relative">
+        <img id="gallery-main" src="{{ gallery_images.0 }}" alt="{{ listing.title }} — фото 1" class="w-full h-full object-contain cursor-zoom-in" data-index="0" />
+        {% if gallery_images|length > 1 %}
+        <button type="button" id="gallery-prev" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-obsidian/80 border border-champagne/40 text-champagne flex items-center justify-center hover:bg-champagne/20 transition-colors z-10" aria-label="Предыдущее фото">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button type="button" id="gallery-next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-obsidian/80 border border-champagne/40 text-champagne flex items-center justify-center hover:bg-champagne/20 transition-colors z-10" aria-label="Следующее фото">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+          <span class="text-ivory/90 text-sm font-mono" id="gallery-counter">1 / {{ gallery_images|length }}</span>
+        </div>
+        <button type="button" id="gallery-expand" class="absolute top-3 right-3 w-10 h-10 rounded-full bg-obsidian/80 border border-champagne/40 text-champagne flex items-center justify-center hover:bg-champagne/20 transition-colors z-10" aria-label="Увеличить">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+        </button>
+      {% endif %}
+      </div>
+      {% if gallery_images|length > 1 %}
+      <div class="flex gap-2 p-3 overflow-x-auto border-t border-champagne/20 bg-obsidian/40">
+        {% for url in gallery_images %}
+        <button type="button" class="gallery-thumb flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 border-transparent hover:border-champagne/50 focus:border-champagne transition-colors {% if forloop.first %}border-champagne{% endif %}" data-index="{{ forloop.counter0 }}" aria-label="Фото {{ forloop.counter }}">
+          <img src="{{ url }}" alt="" class="w-full h-full object-cover" loading="lazy" />
+        </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-4">{{ listing.title }}</h1>
+    <p class="text-ivory/80 flex items-center gap-2 mb-6">
+      <svg class="w-5 h-5 text-champagne shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      {{ listing.address }}
+    </p>
+    <div class="flex flex-wrap gap-6 text-ivory/80 mb-6">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        {{ listing.rooms }} комн.
+      </span>
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+        {{ listing.area }} м²
+      </span>
+    </div>
+    <p class="font-mono text-xl text-champagne font-semibold mb-8">{{ listing.price }}</p>
+    {% if listing.description %}
+    <div class="mb-10">
+      <p class="text-ivory/80 leading-relaxed whitespace-pre-line">{{ listing.description }}</p>
+    </div>
+    {% endif %}
+    <a href="{% url 'contacts' %}" class="inline-flex items-center gap-2 px-8 py-4 rounded-[2rem] bg-champagne text-obsidian font-semibold btn-magnetic relative">
+      <span class="relative z-10">Узнать подробнее / записаться на просмотр</span>
+      <span class="btn-slide bg-ivory/20"></span>
+    </a>
+  </div>
+</section>
+
+{% include 'includes/cta_consult.html' %}
+
+<!-- Модальное окно просмотра фото -->
+<div id="gallery-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-obsidian/95 p-4" aria-hidden="true">
+  <button type="button" id="modal-close" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-slate/80 border border-champagne/40 text-ivory flex items-center justify-center hover:bg-champagne/20 transition-colors z-20" aria-label="Закрыть">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
+  {% if gallery_images|length > 1 %}
+  <button type="button" id="modal-prev" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate/80 border border-champagne/40 text-champagne flex items-center justify-center hover:bg-champagne/20 transition-colors z-20" aria-label="Предыдущее">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <button type="button" id="modal-next" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate/80 border border-champagne/40 text-champagne flex items-center justify-center hover:bg-champagne/20 transition-colors z-20" aria-label="Следующее">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <span class="absolute bottom-4 left-1/2 -translate-x-1/2 text-ivory/80 font-mono text-sm" id="modal-counter">1 / {{ gallery_images|length }}</span>
+  {% endif %}
+  <img id="modal-image" src="" alt="" class="max-w-full max-h-[85vh] w-auto h-auto object-contain" />
+</div>
+
+<script>
+(function() {
+  var images = {{ gallery_images|length|default:1 }};
+  var urls = [{% for url in gallery_images %}"{{ url|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+  if (urls.length === 0) urls = ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80'];
+
+  var currentIndex = 0;
+  var mainImg = document.getElementById('gallery-main');
+  var counterEl = document.getElementById('gallery-counter');
+  var modal = document.getElementById('gallery-modal');
+  var modalImg = document.getElementById('modal-image');
+  var modalCounter = document.getElementById('modal-counter');
+
+  function setIndex(i) {
+    currentIndex = (i + urls.length) % urls.length;
+    if (mainImg) {
+      mainImg.src = urls[currentIndex];
+      mainImg.dataset.index = currentIndex;
+      mainImg.alt = 'Фото ' + (currentIndex + 1);
+    }
+    if (counterEl) counterEl.textContent = (currentIndex + 1) + ' / ' + urls.length;
+    if (modalImg) modalImg.src = urls[currentIndex];
+    if (modalCounter) modalCounter.textContent = (currentIndex + 1) + ' / ' + urls.length;
+    document.querySelectorAll('.gallery-thumb').forEach(function(thumb, idx) {
+      thumb.classList.toggle('border-champagne', idx === currentIndex);
+      thumb.classList.toggle('border-transparent', idx !== currentIndex);
+    });
+  }
+
+  if (document.getElementById('gallery-prev')) {
+    document.getElementById('gallery-prev').addEventListener('click', function() { setIndex(currentIndex - 1); });
+  }
+  if (document.getElementById('gallery-next')) {
+    document.getElementById('gallery-next').addEventListener('click', function() { setIndex(currentIndex + 1); });
+  }
+  document.querySelectorAll('.gallery-thumb').forEach(function(thumb) {
+    thumb.addEventListener('click', function() { setIndex(parseInt(thumb.dataset.index, 10)); });
+  });
+
+  function openModal() {
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    if (modalImg) modalImg.src = urls[currentIndex];
+    if (modalCounter) modalCounter.textContent = (currentIndex + 1) + ' / ' + urls.length;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  if (document.getElementById('gallery-expand')) {
+    document.getElementById('gallery-expand').addEventListener('click', openModal);
+  }
+  if (mainImg) {
+    mainImg.addEventListener('click', openModal);
+  }
+  if (document.getElementById('modal-close')) {
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+  }
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+  }
+  if (document.getElementById('modal-prev')) {
+    document.getElementById('modal-prev').addEventListener('click', function(e) { e.stopPropagation(); setIndex(currentIndex - 1); });
+  }
+  if (document.getElementById('modal-next')) {
+    document.getElementById('modal-next').addEventListener('click', function(e) { e.stopPropagation(); setIndex(currentIndex + 1); });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (modal && !modal.classList.contains('hidden')) {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') setIndex(currentIndex - 1);
+      if (e.key === 'ArrowRight') setIndex(currentIndex + 1);
+    }
+  });
+})();
+</script>
+{% endblock %}

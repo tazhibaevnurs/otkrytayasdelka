@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Политика конфиденциальности{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="font-sans font-bold text-2xl sm:text-3xl text-champagne tracking-tighter mb-6">Политика в отношении обработки персональных данных</h1>
+    <p class="text-ivory/80">Содержимое страницы находится в разработке. По вопросам обработки персональных данных обращайтесь по контактам на сайте.</p>
+    <a href="{% url 'contacts' %}" class="inline-flex items-center gap-2 mt-8 px-6 py-3 rounded-[2rem] bg-champagne/20 text-champagne border border-champagne/40 font-medium hover:bg-champagne/30 transition-colors">Контакты</a>
+  </div>
+</section>
+{% endblock %}

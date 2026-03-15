@@ -1,0 +1,32 @@
+# Docker Compose для деплоя «Открытая Сделка»
+# Запуск: docker compose up -d
+# Сборка: docker compose build
+
+services:
+  web:
+    build: .
+    container_name: otkrytaya-sdelka-web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_DEBUG=0
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,web
+      - DJANGO_DB_PATH=/app/data/db.sqlite3
+      - DJANGO_MEDIA_ROOT=/app/media
+    volumes:
+      # Персистентные данные (SQLite + медиа)
+      - app_data:/app/data
+      - media_data:/app/media
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  app_data:
+  media_data:

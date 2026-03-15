@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Python
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.eggs
+dist
+build
+
+# Django (не копировать в образ)
+*.log
+db.sqlite3
+media
+staticfiles
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+*.sw?
+*.suo
+
+# Документация
+*.md
+!README.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
