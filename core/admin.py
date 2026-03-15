@@ -13,12 +13,12 @@ class SectionImageAdmin(admin.ModelAdmin):
         url = obj.get_url()
         if not url:
             return '—'
-        # Текст вместо превью, чтобы не было битой иконки при 404 или долгой загрузке
-        if obj.image_url and obj.image_url.strip():
-            return format_html('<span style="color: #0a0;">Ссылка</span>')
+        # Внешняя ссылка — показываем превью; /media/ — «Файл», чтобы не было битой иконки при 404
+        if url.startswith('http://') or url.startswith('https://'):
+            return format_html('<img src="{}" style="max-height: 40px; max-width: 80px; object-fit: cover;" alt="" />', url)
         if obj.image:
             return format_html('<span style="color: #069;">Файл</span>')
-        return format_html('<img src="{}" style="max-height: 40px; max-width: 80px; object-fit: cover;" />', url)
+        return format_html('<span style="color: #0a0;">Ссылка</span>')
     admin_preview.short_description = 'Превью'
 
     def has_image(self, obj):

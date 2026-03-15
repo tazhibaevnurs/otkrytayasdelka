@@ -1,3 +1,4 @@
+import os
 import re
 from django.db import models
 
@@ -34,9 +35,15 @@ class SectionImage(models.Model):
         return self.label or self.get_key_display() or self.key
 
     def get_url(self, request=None):
-        """Приоритет у загруженного файла; если его нет — используется ссылка."""
+        """Приоритет у загруженного файла; если файла нет на диске (404) — используется ссылка."""
         if self.image:
-            return request.build_absolute_uri(self.image.url) if request else self.image.url
+            try:
+                if hasattr(self.image, 'path') and os.path.isfile(self.image.path):
+                    return request.build_absolute_uri(self.image.url) if request else self.image.url
+            except (ValueError, OSError):
+                pass
+            if self.image_url and self.image_url.strip():
+                return self.image_url.strip()
         if self.image_url and self.image_url.strip():
             return self.image_url.strip()
         return ''
