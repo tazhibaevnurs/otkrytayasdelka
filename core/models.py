@@ -34,7 +34,7 @@ class SectionImage(models.Model):
         return self.label or self.get_key_display() or self.key
 
     def get_url(self, request=None):
-        """Возвращает URL изображения: приоритет у загруженного файла, иначе — ссылка."""
+        """Приоритет у загруженного файла; если его нет — используется ссылка."""
         if self.image:
             return request.build_absolute_uri(self.image.url) if request else self.image.url
         if self.image_url and self.image_url.strip():

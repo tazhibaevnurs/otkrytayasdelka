@@ -13,9 +13,11 @@ class SectionImageAdmin(admin.ModelAdmin):
         url = obj.get_url()
         if not url:
             return '—'
-        # Если задана ссылка — показываем текст (превью по URL может грузиться долго или давать 404)
+        # Текст вместо превью, чтобы не было битой иконки при 404 или долгой загрузке
         if obj.image_url and obj.image_url.strip():
             return format_html('<span style="color: #0a0;">Ссылка</span>')
+        if obj.image:
+            return format_html('<span style="color: #069;">Файл</span>')
         return format_html('<img src="{}" style="max-height: 40px; max-width: 80px; object-fit: cover;" />', url)
     admin_preview.short_description = 'Превью'
 
