@@ -13,7 +13,6 @@ services:
       - .env
     environment:
       - DJANGO_DEBUG=0
-      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,web
       - DJANGO_DB_PATH=/app/data/db.sqlite3
       - DJANGO_MEDIA_ROOT=/app/media
     volumes:
