@@ -12,5 +12,5 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Раздача медиа (загрузки из админки): и в production, чтобы картинки секций (О нас, Hero и т.д.) открывались
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
