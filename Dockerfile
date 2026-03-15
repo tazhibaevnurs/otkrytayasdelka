@@ -27,9 +27,8 @@ RUN python manage.py collectstatic --noinput --clear 2>/dev/null || true
 # Права на entrypoint
 RUN chmod +x docker-entrypoint.sh
 
-# Не root-пользователь
+# Пользователь appuser (переключение в entrypoint после chown volume)
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser:appuser /app
-USER appuser
 
 EXPOSE 8000
 
