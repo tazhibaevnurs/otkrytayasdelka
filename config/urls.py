@@ -1,7 +1,7 @@
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.static import serve
 from listings.views import listing_list, listing_detail
 
 urlpatterns = [
@@ -12,5 +12,9 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
-# Раздача медиа (загрузки из админки): и в production, чтобы картинки секций (О нас, Hero и т.д.) открывались
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Раздача медиа (загрузки из админки).
+# НЕ используем django.conf.urls.static.static() — в Django 5 при DEBUG=False
+# он НЕ регистрирует URL-паттерн и Django возвращает 404 на /media/...
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
