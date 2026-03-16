@@ -35,17 +35,19 @@ class SectionImage(models.Model):
         return self.label or self.get_key_display() or self.key
 
     def get_url(self, request=None):
-        """Приоритет у загруженного файла; если файла нет на диске — используется ссылка или пусто (view подставит default)."""
+        """Приоритет у загруженного файла; если файла нет на диске — ссылка или '' (view подставит default).
+        Важно: чтобы фото менялось на проде, файл нужно загружать в админке на том же сервере."""
         if self.image:
             try:
-                if hasattr(self.image, 'path') and os.path.isfile(self.image.path):
+                path = getattr(self.image, 'path', None)
+                if path and os.path.isfile(path):
                     url = self.image.url or ''
-                    # build_absolute_uri без ведущего / даёт путь относительно текущей страницы (/about/ + media/...)
                     if url and not url.startswith('/') and not url.startswith('http'):
                         url = '/' + url
                     out = request.build_absolute_uri(url) if request else (url or self.image.url)
                     if out:
                         return out
+                # файла нет на диске (загружен локально или удалён) — не отдаём битую ссылку
             except Exception:
                 pass
             if self.image_url and self.image_url.strip():
