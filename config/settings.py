@@ -1,5 +1,9 @@
+import mimetypes
 import os
 from pathlib import Path
+
+# Чтобы загруженные .avif отдавались с правильным Content-Type
+mimetypes.add_type('image/avif', '.avif')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
