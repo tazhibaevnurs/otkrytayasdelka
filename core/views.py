@@ -33,7 +33,10 @@ def home(request):
 
 def about(request):
     default_about = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80'
-    context = {'about_image_url': _section_image_url('about_image', request, default_about)}
+    context = {
+        'about_image_url': _section_image_url('about_image', request, default_about),
+        'about_image_fallback_url': default_about,
+    }
     return render(request, 'core/about.html', context)
 
 

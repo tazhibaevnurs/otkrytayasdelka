@@ -10,7 +10,8 @@
     <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-8">О компании</h1>
     <div class="space-y-8">
       <div class="rounded-2xl overflow-hidden aspect-video bg-slate/20 border border-champagne/30">
-        <img src="{{ about_image_url }}" alt="О компании" class="w-full h-full object-cover opacity-90">
+        <img src="{{ about_image_url }}" alt="О компании" class="w-full h-full object-cover opacity-90"
+             {% if about_image_fallback_url %}onerror="this.onerror=null;this.src='{{ about_image_fallback_url|escapejs }}';"{% endif %}>
       </div>
       <p class="text-ivory/80 text-lg leading-relaxed">В нашем агентстве недвижимости «Открытая Сделка» работают профессионалы с многолетним опытом.</p>
       <p class="text-ivory/80 text-lg leading-relaxed">Наши эксперты знают рынок недвижимости до мелочей и помогут получить максимально выгодные условия. Мы индивидуально подходим к каждому клиенту, учитываем ваши пожелания, ценности и образ жизни, чтобы подобрать идеальный вариант.</p>
