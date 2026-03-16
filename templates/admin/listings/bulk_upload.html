@@ -1,0 +1,145 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Главная</a>
+  &rsaquo; <a href="{% url 'admin:listings_listing_changelist' %}">Объекты каталога</a>
+  &rsaquo; <a href="{% url 'admin:listings_listing_change' listing.pk %}">{{ listing.title }}</a>
+  &rsaquo; Загрузить фото
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div id="content-main">
+
+  {% if messages %}
+    <ul class="messagelist">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <!-- Текущие фото -->
+  {% with photos=listing.listingimage_set.all %}
+  {% if photos %}
+  <div style="margin-bottom: 24px;">
+    <h2 style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">Фото в галерее ({{ photos.count }})</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+      {% for photo in photos %}
+        {% if photo.image %}
+          <div style="position: relative;">
+            <img src="{{ photo.image.url }}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;" alt="">
+            <span style="display: block; text-align: center; font-size: 11px; color: #666; margin-top: 2px;">№{{ photo.order }}</span>
+          </div>
+        {% elif photo.image_url %}
+          <div style="position: relative;">
+            <img src="{{ photo.image_url }}" style="width: 120px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;" alt="">
+            <span style="display: block; text-align: center; font-size: 11px; color: #666; margin-top: 2px;">№{{ photo.order }} (ссылка)</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Форма загрузки -->
+  <form method="post" enctype="multipart/form-data" id="upload-form">
+    {% csrf_token %}
+
+    <fieldset class="module aligned">
+      <h2>Загрузить новые фото</h2>
+
+      <div class="form-row">
+        <div>
+          <label for="id_images" style="font-weight: bold; display: block; margin-bottom: 8px;">
+            Выберите фотографии (можно сразу несколько):
+          </label>
+          <input
+            type="file"
+            name="images"
+            id="id_images"
+            accept="image/*"
+            multiple
+            style="display: block; margin-bottom: 12px; padding: 8px; border: 2px dashed #ccc; border-radius: 6px; width: 100%; cursor: pointer;"
+          >
+          <p class="help" style="color: #666;">
+            Зажмите Ctrl (Windows) или Cmd (Mac) чтобы выбрать несколько файлов одновременно.<br>
+            Форматы: JPG, PNG, WEBP, AVIF. Фото добавятся в конец галереи.
+          </p>
+        </div>
+      </div>
+
+      <!-- Превью выбранных файлов -->
+      <div id="preview-container" style="display: none; margin-top: 16px;">
+        <p style="font-weight: bold; margin-bottom: 8px;">Выбрано файлов: <span id="file-count">0</span></p>
+        <div id="preview-grid" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+      </div>
+
+    </fieldset>
+
+    <div class="submit-row">
+      <input
+        type="submit"
+        value="Загрузить фото"
+        class="default"
+        id="submit-btn"
+        style="background: #417690;"
+      >
+      <a href="{% url 'admin:listings_listing_change' listing.pk %}" style="margin-left: 12px;">Отмена</a>
+    </div>
+  </form>
+
+</div>
+
+<script>
+(function() {
+  var input = document.getElementById('id_images');
+  var previewContainer = document.getElementById('preview-container');
+  var previewGrid = document.getElementById('preview-grid');
+  var fileCount = document.getElementById('file-count');
+  var submitBtn = document.getElementById('submit-btn');
+
+  input.addEventListener('change', function() {
+    var files = Array.from(this.files);
+    previewGrid.innerHTML = '';
+    if (files.length === 0) {
+      previewContainer.style.display = 'none';
+      return;
+    }
+    previewContainer.style.display = 'block';
+    fileCount.textContent = files.length;
+
+    files.forEach(function(file, idx) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var div = document.createElement('div');
+        div.style.cssText = 'text-align: center;';
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width: 120px; height: 90px; object-fit: cover; border-radius: 4px; border: 2px solid #417690;';
+        var name = document.createElement('span');
+        name.style.cssText = 'display: block; font-size: 10px; color: #555; margin-top: 3px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+        name.textContent = file.name;
+        div.appendChild(img);
+        div.appendChild(name);
+        previewGrid.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Прогресс при отправке
+  document.getElementById('upload-form').addEventListener('submit', function() {
+    submitBtn.value = 'Загружается...';
+    submitBtn.disabled = true;
+  });
+})();
+</script>
+{% endblock %}
