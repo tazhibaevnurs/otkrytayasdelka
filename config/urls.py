@@ -21,6 +21,7 @@ urlpatterns = [
     # SEO
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+    path('google4de3c8fff92579c4.html', TemplateView.as_view(template_name='google4de3c8fff92579c4.html', content_type='text/html')),
 
     path('', include('core.urls')),
 ]
