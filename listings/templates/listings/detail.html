@@ -2,10 +2,41 @@
 {% load static %}
 
 {% block title %}{{ listing.title }}{% endblock %}
-{% block meta_description %}{{ listing.title }}. {{ listing.address }}. {{ listing.rooms }} комн., {{ listing.area }} м². {{ listing.price }}. Агентство недвижимости Открытая Сделка.{% endblock %}
-{% block meta_keywords %}{{ listing.title }}, {{ listing.address }}, недвижимость, купить квартиру, продать квартиру, {{ listing.price }}{% endblock %}
+{% block meta_description %}{{ listing.title }}. {{ listing.address }}. {{ listing.rooms }} комн., {{ listing.area }} м². Цена: {{ listing.price }}. Агентство недвижимости «Открытая Сделка» — Бишкек, Кыргызстан.{% endblock %}
+{% block meta_keywords %}{{ listing.title }}, {{ listing.address }}, купить квартиру Бишкек, недвижимость Кыргызстан, {{ listing.rooms }} комнатная, {{ listing.area }} кв м, Открытая Сделка{% endblock %}
 {% block og_image %}{{ gallery_images.0 }}{% endblock %}
 {% block og_type %}article{% endblock %}
+
+{% block extra_jsonld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Residence",
+  "name": "{{ listing.title|escapejs }}",
+  "description": "{{ listing.description|truncatewords:30|escapejs }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ listing.address|escapejs }}",
+    "addressLocality": "Бишкек",
+    "addressCountry": "KG"
+  },
+  "numberOfRooms": {{ listing.rooms }},
+  "floorSize": {
+    "@type": "QuantitativeValue",
+    "value": {{ listing.area }},
+    "unitCode": "MTK"
+  },
+  "url": "https://otkrytayasdelka.kg{% url 'listing_detail' listing.pk %}",
+  {% if gallery_images %}"image": "{{ gallery_images.0|escapejs }}",{% endif %}
+  "offeredBy": {
+    "@type": "RealEstateAgent",
+    "name": "Открытая Сделка",
+    "url": "https://otkrytayasdelka.kg",
+    "telephone": "+996553553663"
+  }
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen">

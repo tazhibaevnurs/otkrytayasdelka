@@ -25,6 +25,41 @@
   <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.png' %}">
   <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}" sizes="32x32">
   <link rel="apple-touch-icon" href="{% static 'img/logo.png' %}">
+
+  <!-- JSON-LD: структурированные данные для Google (schema.org) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Открытая Сделка",
+    "alternateName": "Otkrytaya Sdelka",
+    "description": "Агентство недвижимости «Открытая Сделка» — помощь в покупке и продаже недвижимости в Кыргызстане. Профессионалы с многолетним опытом.",
+    "url": "https://otkrytayasdelka.kg",
+    "logo": "https://otkrytayasdelka.kg{% static 'img/logo.png' %}",
+    "image": "https://otkrytayasdelka.kg{% static 'img/logo.png' %}",
+    "telephone": "+996553553663",
+    "email": "otkrytaya.sdelka@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Бишкек",
+      "addressCountry": "KG"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Кыргызстан"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    },
+    "priceRange": "$$",
+    "foundingDate": "2016"
+  }
+  </script>
+  {% block extra_jsonld %}{% endblock %}
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
