@@ -28,7 +28,6 @@ staticfiles/
 *.sw?
 *.suo
 
-# Markdown
+# Markdown — в репозитории только README.md (в корне или в подпапках)
 *.md
-!README.md
-!deploy/DEPLOY_SECURITY.md
+!**/README.md
