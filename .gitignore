@@ -15,8 +15,11 @@ build/
 db.sqlite3
 media/
 staticfiles/
+# Секреты и локальные env (шаблон — только .env.example в репозитории)
 .env
 .env.local
+.env.*
+!.env.example
 
 # IDE / OS
 .vscode
@@ -28,3 +31,4 @@ staticfiles/
 # Markdown
 *.md
 !README.md
+!deploy/DEPLOY_SECURITY.md

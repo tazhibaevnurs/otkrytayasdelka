@@ -1,7 +1,11 @@
 Django>=5.0,<6
+argon2-cffi>=23.1.0
 djangorestframework>=3.14
 django-cors-headers>=4.3
 Pillow>=10.0
+django-simple-captcha>=0.6.0
+# Опционально для verify_stripe_signature: pip install stripe
 gunicorn>=21.0
 whitenoise>=6.6
 psycopg2-binary>=2.9
+python-json-logger>=2.0.0

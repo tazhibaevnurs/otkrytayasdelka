@@ -6,5 +6,6 @@ router = DefaultRouter()
 router.register(r'listings', views.ListingViewSet, basename='listing')
 
 urlpatterns = [
+    path('ai/generate/', views.ai_generate_stub, name='api_ai_generate'),
     path('', include(router.urls)),
 ]

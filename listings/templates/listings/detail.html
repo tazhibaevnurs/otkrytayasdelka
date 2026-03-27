@@ -26,7 +26,7 @@
     "value": {{ listing.area }},
     "unitCode": "MTK"
   },
-  "url": "https://otkrytayasdelka.kg{% url 'listing_detail' listing.pk %}",
+  "url": "https://otkrytayasdelka.kg{% url 'listing_detail' listing.public_uuid %}",
   {% if gallery_images %}"image": "{{ gallery_images.0|escapejs }}",{% endif %}
   "offeredBy": {
     "@type": "RealEstateAgent",
@@ -91,7 +91,23 @@
         {{ listing.area }} м²
       </span>
     </div>
+    <div class="flex flex-wrap gap-3 mb-6">
+      <span class="px-3 py-1.5 rounded-lg border border-champagne/40 text-sm text-ivory/80">
+        {% if listing.is_land_plot %}Земельный участок{% elif listing.property_category == 'commercial' %}Коммерческое помещение{% else %}Жилое{% endif %}
+      </span>
+    </div>
     <p class="font-mono text-xl text-champagne font-semibold mb-8">{{ listing.price }}</p>
+    {% if listing.realtor_name or listing.realtor_phone %}
+    <div class="mb-8 rounded-2xl border border-champagne/30 bg-slate/20 p-5 sm:p-6">
+      <p class="font-mono text-xs tracking-widest text-champagne/80 uppercase mb-2">Контакт риэлтора</p>
+      {% if listing.realtor_name %}
+      <p class="text-ivory/90 mb-1">{{ listing.realtor_name }}</p>
+      {% endif %}
+      {% if listing.realtor_phone %}
+      <a href="tel:{{ listing.realtor_phone }}" class="text-champagne hover:text-ivory transition-colors">{{ listing.realtor_phone }}</a>
+      {% endif %}
+    </div>
+    {% endif %}
     {% if listing.description %}
     <div class="mb-10">
       <p class="text-ivory/80 leading-relaxed whitespace-pre-line">{{ listing.description }}</p>

@@ -13,6 +13,7 @@ class StaticPagesSitemap(Sitemap):
         return [
             'home',
             'about',
+            'team',
             'purchase',
             'sale',
             'contacts',
@@ -29,6 +30,7 @@ class StaticPagesSitemap(Sitemap):
             'purchase': 0.8,
             'sale': 0.8,
             'about': 0.7,
+            'team': 0.65,
             'contacts': 0.6,
         }
         return priorities.get(item, 0.5)
@@ -40,6 +42,7 @@ class StaticPagesSitemap(Sitemap):
             'purchase': 'weekly',
             'sale': 'weekly',
             'about': 'monthly',
+            'team': 'monthly',
             'contacts': 'monthly',
         }
         return freqs.get(item, 'weekly')
@@ -55,7 +58,7 @@ class ListingSitemap(Sitemap):
         return Listing.objects.filter(is_published=True).order_by('-updated_at')
 
     def location(self, obj):
-        return reverse('listing_detail', args=[obj.pk])
+        return reverse('listing_detail', kwargs={'public_uuid': obj.public_uuid})
 
     def lastmod(self, obj):
         return obj.updated_at

@@ -85,9 +85,12 @@ class ContactRequest(models.Model):
 
 class Review(models.Model):
     """Отзыв на главной странице."""
-    author_name = models.CharField('Имя / подпись', max_length=200, default='Отзыв клиента')
-    text = models.TextField('Текст отзыва')
-    image = models.ImageField('Фото автора', upload_to='reviews/', blank=True, null=True)
+    author_name = models.CharField('ФИО', max_length=200, default='Отзыв клиента')
+    text = models.TextField('Текст отзыва', blank=True)
+    image = models.ImageField('Фото', upload_to='reviews/', blank=True, null=True)
+    image_url = models.URLField('Ссылка на фото', blank=True)
+    video = models.FileField('Видео', upload_to='reviews/videos/', blank=True, null=True)
+    video_url = models.URLField('Ссылка на видео', blank=True)
     order = models.PositiveSmallIntegerField('Порядок', default=0)
     is_active = models.BooleanField('Показывать', default=True)
 
@@ -98,6 +101,36 @@ class Review(models.Model):
 
     def __str__(self):
         return self.author_name or f'Отзыв #{self.pk}'
+
+
+class Employee(models.Model):
+    """Сотрудник агентства — страница «Команда»."""
+    full_name = models.CharField('ФИО', max_length=200)
+    position = models.CharField('Должность', max_length=150, blank=True)
+    photo = models.ImageField('Фото', upload_to='team/', blank=True, null=True)
+    photo_url = models.URLField(
+        'Ссылка на фото',
+        blank=True,
+        help_text='Если не загружаете файл с диска',
+    )
+    bio = models.TextField('О сотруднике', blank=True)
+    order = models.PositiveSmallIntegerField('Порядок', default=0)
+    is_active = models.BooleanField('Показывать на сайте', default=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = 'Сотрудник'
+        verbose_name_plural = 'Сотрудники'
+
+    def __str__(self):
+        return self.full_name
+
+    @property
+    def photo_display_url(self):
+        """Относительный URL фото: загрузка или внешняя ссылка."""
+        if self.photo:
+            return self.photo.url
+        return (self.photo_url or '').strip()
 
 
 class FeaturedMedia(models.Model):

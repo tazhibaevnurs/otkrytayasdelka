@@ -43,6 +43,15 @@
         <label for="filter-area-max" class="block text-xs font-mono text-champagne/80 uppercase tracking-wider mb-1.5">Площадь до, м²</label>
         <input type="number" name="area_max" id="filter-area-max" value="{{ filter_area_max }}" min="0" step="1" placeholder="—" class="w-28 rounded-xl border border-champagne/40 bg-obsidian/50 text-ivory placeholder-ivory/40 px-4 py-2.5 text-sm focus:border-champagne/70 focus:outline-none">
       </div>
+      <div class="w-full sm:w-auto">
+        <label for="filter-property-category" class="block text-xs font-mono text-champagne/80 uppercase tracking-wider mb-1.5">Категория</label>
+        <select name="property_category" id="filter-property-category" class="rounded-xl border border-champagne/40 bg-obsidian/50 text-ivory px-4 py-2.5 text-sm focus:border-champagne/70 focus:outline-none">
+          <option value="">Все</option>
+          <option value="residential" {% if filter_property_category == 'residential' %}selected{% endif %}>Жилое</option>
+          <option value="commercial" {% if filter_property_category == 'commercial' %}selected{% endif %}>Коммерческое помещение</option>
+          <option value="land" {% if filter_property_category == 'land' %}selected{% endif %}>Земельный участок</option>
+        </select>
+      </div>
       <button type="submit" class="px-5 py-2.5 rounded-xl bg-champagne/20 text-champagne border border-champagne/40 font-medium text-sm hover:bg-champagne/30 transition-colors">Применить</button>
     </form>
 

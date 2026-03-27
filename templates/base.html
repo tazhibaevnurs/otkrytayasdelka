@@ -85,6 +85,7 @@
     }
   </script>
   <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+  <!-- Тема: только localStorage (без токенов). Сессия Django — cookie sessionid (httpOnly). -->
   <script>
     (function() {
       var stored = localStorage.getItem('theme');
@@ -99,7 +100,7 @@
   <div class="noise-overlay" aria-hidden="true"></div>
 
   <!-- Navbar: компактный, текст в одну строку, ровное выравнивание -->
-  <nav id="navbar" class="fixed left-1/2 -translate-x-1/2 top-6 z-50 flex items-center justify-between gap-4 px-5 py-2.5 rounded-[2rem] transition-all duration-500 w-[92vw] max-w-[780px] min-h-[52px]"
+  <nav id="navbar" class="fixed left-1/2 -translate-x-1/2 top-6 z-50 flex items-center justify-between gap-4 px-5 py-2.5 rounded-[2rem] transition-all duration-500 w-[92vw] max-w-[880px] min-h-[52px]"
        data-is-home="{% if request.resolver_match.url_name == 'home' %}1{% else %}0{% endif %}">
     <a href="{% url 'home' %}" class="hover-lift transition-transform text-inherit shrink-0">
       <img src="{% static 'img/logo.png' %}" alt="Открытая Сделка" class="h-9 sm:h-11 w-auto object-contain" />
@@ -108,6 +109,7 @@
       <a href="{% url 'home' %}" class="text-sm font-medium hover-lift transition-transform opacity-90 hover:opacity-100 whitespace-nowrap py-1">Главная</a>
       <a href="{% url 'listing_list' %}" class="text-sm font-medium hover-lift transition-transform opacity-90 hover:opacity-100 whitespace-nowrap py-1">Каталог</a>
       <a href="{% url 'about' %}" class="text-sm font-medium hover-lift transition-transform opacity-90 hover:opacity-100 whitespace-nowrap py-1">О компании</a>
+      <a href="{% url 'team' %}" class="text-sm font-medium hover-lift transition-transform opacity-90 hover:opacity-100 whitespace-nowrap py-1">Команда</a>
       <div class="relative group" id="services-dropdown">
         <button type="button" id="services-dropdown-btn" class="text-sm font-medium hover-lift transition-transform opacity-90 hover:opacity-100 flex items-center gap-1 whitespace-nowrap py-1" aria-expanded="false" aria-haspopup="true" aria-controls="services-menu">
           Наши услуги
@@ -136,6 +138,7 @@
       <a href="{% url 'home' %}" class="text-ivory py-2">Главная</a>
       <a href="{% url 'listing_list' %}" class="text-ivory py-2">Каталог</a>
       <a href="{% url 'about' %}" class="text-ivory py-2">О компании</a>
+      <a href="{% url 'team' %}" class="text-ivory py-2">Команда</a>
       <p class="text-ivory/60 text-xs font-mono pt-2">Наши услуги</p>
       <a href="{% url 'purchase' %}" class="text-ivory pl-4 py-1 text-sm">Покупка</a>
       <a href="{% url 'sale' %}" class="text-ivory pl-4 py-1 text-sm">Продажа</a>
@@ -164,6 +167,7 @@
         <a href="{% url 'home' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">Главная</a>
         <a href="{% url 'listing_list' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">Каталог</a>
         <a href="{% url 'about' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">О компании</a>
+        <a href="{% url 'team' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">Команда</a>
         <a href="{% url 'purchase' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">Покупка</a>
         <a href="{% url 'sale' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">Продажа</a>
         <a href="{% url 'contacts' %}" class="block text-sm text-ivory/90 hover:text-champagne transition-colors">Контакты</a>
@@ -174,10 +178,12 @@
         <a href="tel:+996553553663" class="block text-sm text-ivory/90 hover:text-champagne transition-colors mt-1">+996 553 553 663</a>
       </div>
       <div class="flex flex-col justify-end">
-        <div class="flex items-center gap-2 font-mono text-xs text-ivory/70">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          System Operational
-        </div>
+        <p class="font-mono text-[10px] uppercase tracking-wider text-ivory/45 mb-2">Разработка сайта</p>
+        <a href="https://t.me/tazhibaevn" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 font-mono text-xs text-ivory/75 hover:text-champagne transition-colors group"
+           aria-label="Сайт разработан — контакт в Telegram @tazhibaevn">
+          <svg class="w-3.5 h-3.5 text-sky-400/90 group-hover:text-sky-300 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          <span>@tazhibaevn</span>
+        </a>
       </div>
     </div>
     <div class="max-w-6xl mx-auto mt-12 pt-8 border-t border-slate/30 flex flex-wrap gap-6 text-sm text-ivory/60">

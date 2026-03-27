@@ -4,7 +4,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
-from listings.views import listing_list, listing_detail
+from listings.views import listing_detail_legacy_redirect, listing_list, listing_detail
 from core.sitemaps import StaticPagesSitemap, ListingSitemap
 
 sitemaps = {
@@ -13,8 +13,15 @@ sitemaps = {
 }
 
 urlpatterns = [
+    path('accounts/', include('accounts.urls')),
     path('admin/', admin.site.urls),
-    path('catalog/<int:pk>/', listing_detail, name='listing_detail'),
+    path('captcha/', include('captcha.urls')),
+    path(
+        'catalog/<int:pk>/',
+        listing_detail_legacy_redirect,
+        name='listing_detail_legacy',
+    ),
+    path('catalog/<uuid:public_uuid>/', listing_detail, name='listing_detail'),
     path('catalog/', listing_list, name='listing_list'),
     path('api/', include('listings.urls')),
 

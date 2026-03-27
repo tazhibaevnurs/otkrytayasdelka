@@ -1,10 +1,14 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import path, reverse
 from django.utils.html import format_html
 from django.contrib import messages
-from django.http import Http404
 from .models import Listing, ListingImage
+from .upload_validation import (
+    MAX_GALLERY_FILES_PER_REQUEST,
+    validate_gallery_image_file,
+)
 
 
 class ListingImageInline(admin.TabularInline):
@@ -15,9 +19,24 @@ class ListingImageInline(admin.TabularInline):
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ('title', 'address', 'listing_type', 'price', 'rooms', 'area', 'is_published', 'gallery_count', 'bulk_upload_link', 'created_at')
-    list_filter = ('is_published', 'listing_type')
-    search_fields = ('title', 'address')
+    list_display = (
+        'title',
+        'address',
+        'listing_type',
+        'property_category',
+        'is_land_plot',
+        'price',
+        'rooms',
+        'area',
+        'realtor_name',
+        'realtor_phone',
+        'is_published',
+        'gallery_count',
+        'bulk_upload_link',
+        'created_at',
+    )
+    list_filter = ('is_published', 'listing_type', 'property_category', 'is_land_plot')
+    search_fields = ('title', 'address', 'realtor_name', 'realtor_phone')
     ordering = ('-created_at',)
     inlines = [ListingImageInline]
 
@@ -47,18 +66,36 @@ class ListingAdmin(admin.ModelAdmin):
         listing = get_object_or_404(Listing, pk=pk)
 
         if request.method == 'POST':
-            files = request.FILES.getlist('images')
+            files = request.FILES.getlist('images')[:MAX_GALLERY_FILES_PER_REQUEST]
+            if len(request.FILES.getlist('images')) > MAX_GALLERY_FILES_PER_REQUEST:
+                messages.warning(
+                    request,
+                    f'За один раз обработано не более {MAX_GALLERY_FILES_PER_REQUEST} файлов.',
+                )
             if not files:
                 messages.warning(request, 'Выберите хотя бы одно фото.')
             else:
-                # Определяем порядок — после последнего существующего фото
                 last_order = listing.listingimage_set.order_by('-order').values_list('order', flat=True).first() or 0
                 created = 0
+                errors = []
                 for i, f in enumerate(files, start=1):
+                    try:
+                        validate_gallery_image_file(f)
+                    except ValidationError as e:
+                        msg = e.messages[0] if e.messages else str(e)
+                        errors.append(f'{getattr(f, "name", "файл")}: {msg}')
+                        continue
                     ListingImage.objects.create(listing=listing, image=f, order=last_order + i)
                     created += 1
-                messages.success(request, f'Загружено {created} фото.')
-                return redirect(reverse('admin:listings_listing_change', args=[pk]))
+                if errors:
+                    for err in errors:
+                        messages.error(request, err)
+                if created:
+                    messages.success(request, f'Загружено {created} фото.')
+                elif not errors:
+                    messages.warning(request, 'Не удалось сохранить файлы.')
+                if created:
+                    return redirect(reverse('admin:listings_listing_change', args=[pk]))
 
         context = {
             **self.admin_site.each_context(request),

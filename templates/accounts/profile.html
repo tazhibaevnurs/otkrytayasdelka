@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<section class="min-h-[50vh] flex items-center justify-center px-4 py-24">
+  <div class="w-full max-w-lg rounded-[2rem] border border-champagne/30 bg-obsidian/40 backdrop-blur p-8 text-ivory text-center">
+    <p class="text-ivory/90">Вы вошли как <strong>{{ request.user.get_username }}</strong></p>
+    <form method="post" action="{% url 'logout' %}" class="mt-8">
+      {% csrf_token %}
+      <button type="submit" class="px-6 py-3 rounded-xl border border-champagne/50 text-champagne hover:bg-champagne/10 transition">Выйти</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

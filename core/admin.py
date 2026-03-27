@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import FeaturedMedia, SectionImage, Review, ContactRequest
+from .models import Employee, FeaturedMedia, SectionImage, Review, ContactRequest
 
 
 @admin.register(SectionImage)
@@ -40,16 +40,47 @@ class ContactRequestAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(Employee)
+class EmployeeAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'position', 'admin_photo', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('full_name', 'position', 'bio')
+    fieldsets = (
+        (None, {'fields': ('full_name', 'position', 'bio', 'order', 'is_active')}),
+        ('Фото', {'fields': ('photo', 'photo_url')}),
+    )
+
+    def admin_photo(self, obj):
+        url = obj.photo_display_url
+        if not url:
+            return '—'
+        if url.startswith('http://') or url.startswith('https://'):
+            return format_html('<img src="{}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 8px;" alt="" />', url)
+        return format_html('<span style="color: #069;">Файл</span>')
+    admin_photo.short_description = 'Фото'
+
+
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('author_name', 'text_short', 'order', 'is_active')
+    list_display = ('author_name', 'text_short', 'has_media', 'order', 'is_active')
     list_editable = ('order', 'is_active')
     list_filter = ('is_active',)
     search_fields = ('author_name', 'text')
+    fieldsets = (
+        (None, {'fields': ('author_name', 'text')}),
+        ('Медиа', {'fields': ('image', 'image_url', 'video', 'video_url')}),
+        ('Публикация', {'fields': ('order', 'is_active')}),
+    )
 
     def text_short(self, obj):
         return (obj.text[:60] + '…') if len(obj.text) > 60 else obj.text
     text_short.short_description = 'Текст'
+
+    def has_media(self, obj):
+        return bool(obj.image or obj.image_url or obj.video or obj.video_url)
+    has_media.boolean = True
+    has_media.short_description = 'Есть медиа'
 
 
 @admin.register(FeaturedMedia)

@@ -8,14 +8,18 @@ class ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
         fields = [
-            'id',
+            'public_uuid',
             'title',
             'address',
             'listing_type',
+            'property_category',
+            'is_land_plot',
             'price',
             'rooms',
             'area',
             'description',
+            'realtor_name',
+            'realtor_phone',
             'image_display_url',
             'created_at',
         ]

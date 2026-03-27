@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from django.templatetags.static import static
 from django.urls import reverse
 from .forms import ContactForm
-from .models import FeaturedMedia, SectionImage, Review
+from .models import Employee, FeaturedMedia, SectionImage, Review
+from listings.models import Listing
 
 
 def _section_image_url(key, request=None, default=''):
@@ -14,7 +16,8 @@ def _section_image_url(key, request=None, default=''):
 
 def home(request):
     featured_media = FeaturedMedia.objects.filter(is_active=True).first()
-    default_hero = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80'
+    # Фон hero по умолчанию — static/img/hero-home.png (можно переопределить в «Изображения секций», ключ home_hero)
+    default_hero = request.build_absolute_uri(static('img/hero-home.png'))
     default_help = 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80'
     context = {
         'featured_media': featured_media,
@@ -27,8 +30,15 @@ def home(request):
         'advantage_6_url': _section_image_url('advantage_6', request, 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80'),
         'help_block_url': _section_image_url('help_block', request, default_help),
         'reviews': Review.objects.filter(is_active=True),
+        'latest_listings': Listing.objects.filter(is_published=True).order_by('-created_at')[:6],
     }
     return render(request, 'core/home.html', context)
+
+
+def team(request):
+    """Страница сотрудников."""
+    employees = Employee.objects.filter(is_active=True)
+    return render(request, 'core/team.html', {'employees': employees})
 
 
 def about(request):
@@ -69,5 +79,5 @@ def contacts(request):
 
 
 def privacy(request):
-    """Страница «Политика конфиденциальности» (заглушка до наполнения)."""
+    """Страница «Политика в отношении обработки персональных данных»."""
     return render(request, 'core/privacy.html')

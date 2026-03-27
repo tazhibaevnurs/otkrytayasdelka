@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 
@@ -9,14 +11,36 @@ class Listing(models.Model):
         (TYPE_SALE, 'Продажа'),
         (TYPE_PURCHASE, 'Покупка'),
     ]
+    PROPERTY_RESIDENTIAL = 'residential'
+    PROPERTY_COMMERCIAL = 'commercial'
+    PROPERTY_CHOICES = [
+        (PROPERTY_RESIDENTIAL, 'Жилое'),
+        (PROPERTY_COMMERCIAL, 'Коммерческое помещение'),
+    ]
 
+    public_uuid = models.UUIDField(
+        'Публичный идентификатор',
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+        db_index=True,
+    )
     title = models.CharField('Название', max_length=255)
     address = models.CharField('Адрес', max_length=255)
     listing_type = models.CharField('Тип', max_length=20, choices=TYPE_CHOICES, default=TYPE_SALE)
+    property_category = models.CharField(
+        'Категория',
+        max_length=20,
+        choices=PROPERTY_CHOICES,
+        default=PROPERTY_RESIDENTIAL,
+    )
+    is_land_plot = models.BooleanField('Земельный участок', default=False)
     price = models.CharField('Цена', max_length=100, default='По запросу')  # "По запросу" или сумма
     rooms = models.PositiveSmallIntegerField('Комнат', default=1)
     area = models.PositiveIntegerField('Площадь, м²', default=0)
     description = models.TextField('Описание', blank=True)
+    realtor_name = models.CharField('Имя риэлтора', max_length=120, blank=True)
+    realtor_phone = models.CharField('Телефон риэлтора', max_length=25, blank=True)
     image = models.ImageField('Фото', upload_to='listings/', blank=True, null=True)
     image_url = models.URLField('Ссылка на фото (если не загружено)', blank=True)
     is_published = models.BooleanField('Опубликовано', default=True)
