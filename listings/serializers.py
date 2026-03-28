@@ -1,9 +1,13 @@
 from rest_framework import serializers
+
+from .catalog_images import listing_card_image_url
+
 from .models import Listing
 
 
 class ListingSerializer(serializers.ModelSerializer):
     image_display_url = serializers.SerializerMethodField()
+    image_catalog_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Listing
@@ -21,6 +25,7 @@ class ListingSerializer(serializers.ModelSerializer):
             'realtor_name',
             'realtor_phone',
             'image_display_url',
+            'image_catalog_url',
             'created_at',
         ]
 
@@ -31,3 +36,13 @@ class ListingSerializer(serializers.ModelSerializer):
             if request:
                 return request.build_absolute_uri(url)
         return url or None
+
+    def get_image_catalog_url(self, obj):
+        """Лёгкий URL для сеток (превью ≤720px при загрузке в медиа)."""
+        path = listing_card_image_url(obj)
+        if path.startswith('http'):
+            return path
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(path)
+        return path

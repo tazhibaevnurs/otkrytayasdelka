@@ -42,6 +42,14 @@ class Listing(models.Model):
     realtor_name = models.CharField('Имя риэлтора', max_length=120, blank=True)
     realtor_phone = models.CharField('Телефон риэлтора', max_length=25, blank=True)
     image = models.ImageField('Фото', upload_to='listings/', blank=True, null=True)
+    image_thumbnail = models.ImageField(
+        'Превью для каталога',
+        upload_to='listings/catalog/',
+        blank=True,
+        null=True,
+        editable=False,
+        help_text='Генерируется автоматически при сохранении основного фото.',
+    )
     image_url = models.URLField('Ссылка на фото (если не загружено)', blank=True)
     is_published = models.BooleanField('Опубликовано', default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -54,6 +62,43 @@ class Listing(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        update_fields = kwargs.get('update_fields')
+        old_image_name = None
+        if self.pk:
+            ref = Listing.objects.filter(pk=self.pk).only('image').first()
+            if ref and ref.image:
+                old_image_name = ref.image.name
+
+        super().save(*args, **kwargs)
+
+        if update_fields is not None and 'image' not in update_fields:
+            return
+
+        if not self.image:
+            if self.image_thumbnail:
+                self.image_thumbnail.delete(save=False)
+                self.image_thumbnail = None
+                super().save(update_fields=['image_thumbnail'])
+            return
+
+        if old_image_name == self.image.name and self.image_thumbnail:
+            return
+
+        from .images import thumbnail_jpeg_from_image_field
+
+        try:
+            data = thumbnail_jpeg_from_image_field(self.image)
+        except Exception:
+            return
+
+        base = self.image.name.rsplit('/', 1)[-1].rsplit('.', 1)[0]
+        thumb_name = f'{base}_card.jpg'
+        if self.image_thumbnail:
+            self.image_thumbnail.delete(save=False)
+        self.image_thumbnail.save(thumb_name, data, save=False)
+        super().save(update_fields=['image_thumbnail'])
 
     @property
     def image_display_url(self):

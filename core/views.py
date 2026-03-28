@@ -30,7 +30,9 @@ def home(request):
         'advantage_6_url': _section_image_url('advantage_6', request, 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80'),
         'help_block_url': _section_image_url('help_block', request, default_help),
         'reviews': Review.objects.filter(is_active=True),
-        'latest_listings': Listing.objects.filter(is_published=True).order_by('-created_at')[:6],
+        'latest_listings': Listing.objects.filter(is_published=True)
+        .defer('description')
+        .order_by('-created_at')[:6],
     }
     return render(request, 'core/home.html', context)
 

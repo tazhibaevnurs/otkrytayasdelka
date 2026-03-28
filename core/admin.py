@@ -5,6 +5,7 @@ from .models import Employee, FeaturedMedia, SectionImage, Review, ContactReques
 
 @admin.register(SectionImage)
 class SectionImageAdmin(admin.ModelAdmin):
+    readonly_fields = ('image_optimized',)
     list_display = ('key', 'admin_preview', 'label', 'has_image')
     list_filter = ('key',)
     search_fields = ('key', 'label')

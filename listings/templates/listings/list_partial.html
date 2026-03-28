@@ -1,16 +1,11 @@
+{% load listing_images %}
 {% if listings %}
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
   {% for listing in listings %}
   <article class="listing-card flex flex-col h-full rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden hover:border-champagne/50 transition-all duration-300 hover-lift">
     <a href="{% url 'listing_detail' listing.public_uuid %}" class="block aspect-[4/3] bg-slate/30 relative overflow-hidden shrink-0">
       <span class="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-lg text-xs font-medium {% if listing.listing_type == 'sale' %}bg-champagne/90 text-obsidian{% else %}bg-ivory/20 text-ivory border border-ivory/40{% endif %}">{% if listing.listing_type == 'sale' %}Продажа{% else %}Покупка{% endif %}</span>
-      {% if listing.image %}
-        <img src="{{ request.scheme }}://{{ request.get_host }}{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover opacity-95">
-      {% elif listing.image_url %}
-        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="w-full h-full object-cover opacity-95">
-      {% else %}
-        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="" class="w-full h-full object-cover opacity-95">
-      {% endif %}
+      <img src="{% listing_card_image_url listing %}" alt="{{ listing.title }}" width="720" height="540" class="w-full h-full object-cover opacity-95" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" decoding="async"{% if forloop.counter <= 3 %} fetchpriority="high" loading="eager"{% else %} fetchpriority="low" loading="lazy"{% endif %}>
     </a>
     <div class="p-5 sm:p-6 flex flex-col flex-1 min-h-0">
       <a href="{% url 'listing_detail' listing.public_uuid %}">

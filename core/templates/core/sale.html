@@ -3,10 +3,16 @@
 
 {% block title %}Продажа недвижимости{% endblock %}
 
+{% block extra_head %}
+<link rel="preload" as="image" href="{{ sale_hero_url }}">
+{% endblock %}
+
 {% block content %}
 <!-- Hero -->
 <section class="relative min-h-[70vh] flex flex-col justify-end overflow-hidden px-6 pb-20 sm:pb-28 pt-32">
-  <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ sale_hero_url }}');"></div>
+  <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+    <img src="{{ sale_hero_url }}" alt="" width="1920" height="1080" fetchpriority="high" decoding="async" class="h-full w-full object-cover object-center">
+  </div>
   <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-transparent"></div>
   <div class="relative z-10 max-w-4xl">
     <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3">[ УСЛУГИ ]</p>

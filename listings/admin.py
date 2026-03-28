@@ -19,6 +19,7 @@ class ListingImageInline(admin.TabularInline):
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
+    readonly_fields = ('image_thumbnail',)
     list_display = (
         'title',
         'address',

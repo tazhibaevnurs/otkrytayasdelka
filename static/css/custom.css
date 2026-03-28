@@ -42,8 +42,27 @@ html[data-theme="light"] #mobile-menu {
   background-color: rgba(250, 248, 245, 0.98) !important;
   border-color: var(--theme-border) !important;
 }
-html[data-theme="light"] #services-menu a,
-html[data-theme="light"] #mobile-menu a { color: var(--theme-text-primary) !important; }
+/* Выпадашка и мобильное меню: тёмный текст (перебивает правило «белый текст на герое» ниже) */
+html[data-theme="light"] #navbar #services-menu a,
+html[data-theme="light"] #navbar #mobile-menu a,
+html[data-theme="light"] #navbar #mobile-menu p,
+html[data-theme="light"] #navbar #mobile-menu span {
+  color: #0D0D12 !important;
+}
+html[data-theme="light"] #navbar #services-menu a:hover,
+html[data-theme="light"] #navbar #mobile-menu a:hover {
+  color: #C9A84C !important;
+}
+html[data-theme="light"] #navbar #mobile-menu a.text-champagne,
+html[data-theme="light"] #navbar #mobile-menu a.font-semibold.text-champagne {
+  color: #C9A84C !important;
+}
+html[data-theme="light"] #navbar #mobile-menu #theme-toggle-mobile {
+  color: #C9A84C !important;
+}
+html[data-theme="light"] #navbar #mobile-menu #theme-toggle-mobile svg {
+  stroke: currentColor;
+}
 html[data-theme="light"] .bg-slate\/20 { background-color: var(--theme-bg-card) !important; }
 html[data-theme="light"] .bg-slate\/30 { background-color: rgba(42, 42, 53, 0.1) !important; }
 html[data-theme="light"] .text-ivory { color: var(--theme-text-primary) !important; }
@@ -59,10 +78,21 @@ html[data-theme="light"] footer a { color: rgba(250, 248, 245, 0.9); }
 html[data-theme="light"] .border-champagne\/30 { border-color: var(--theme-border); }
 html[data-theme="light"] .border-champagne\/40 { border-color: rgba(201, 168, 76, 0.5); }
 html[data-theme="light"] .noise-overlay { opacity: 0.03; }
-/* На главной: навбар над героем остаётся со светлым текстом */
-html[data-theme="light"] #navbar.bg-transparent,
-html[data-theme="light"] #navbar.bg-transparent a,
-html[data-theme="light"] #navbar.bg-transparent button { color: #FAF8F5 !important; }
+/*
+ * Главная + светлая тема: светлый текст только у полосы навбара над героем,
+ * не у #services-menu / #mobile-menu (иначе белое на белом).
+ */
+html[data-theme="light"] #navbar.bg-transparent .hidden.md\:flex > a,
+html[data-theme="light"] #navbar.bg-transparent .hidden.md\:flex > div > button#services-dropdown-btn,
+html[data-theme="light"] #navbar.bg-transparent #mobile-menu-btn {
+  color: #FAF8F5 !important;
+}
+html[data-theme="light"] #navbar.bg-transparent #theme-toggle {
+  color: #C9A84C !important;
+}
+html[data-theme="light"] #navbar.bg-transparent #theme-toggle svg {
+  stroke: currentColor;
+}
 /* Поля ввода в светлой теме */
 html[data-theme="light"] input[type="text"],
 html[data-theme="light"] input[type="tel"],

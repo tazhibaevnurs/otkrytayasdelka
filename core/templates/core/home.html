@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static listing_images %}
 
 {% block title %}Главная{% endblock %}
 {% block meta_description %}Поможем продать и купить недвижимость быстро и безопасно. Агентство «Открытая Сделка» — подбор объектов, сопровождение сделок, юридическая проверка. Бишкек, Кыргызстан.{% endblock %}
 
+{% block extra_head %}
+<link rel="preload" as="image" href="{{ home_hero_url }}">
+{% endblock %}
+
 {% block content %}
-<!-- Hero -->
+<!-- Hero: <img> вместо background — LCP, fetchpriority, веб-копия из админки -->
 <section id="hero" class="relative h-[100dvh] flex flex-col justify-end overflow-hidden">
-  <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ home_hero_url }}');"></div>
+  <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+    <img src="{{ home_hero_url }}" alt="" width="1920" height="1080" fetchpriority="high" decoding="async" class="h-full w-full object-cover object-center">
+  </div>
   <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/70 to-transparent"></div>
   <div class="relative z-10 w-full px-6 sm:px-10 lg:px-16 pb-20 sm:pb-28">
     <h1 class="hero-heading w-full mb-4">
@@ -44,13 +50,7 @@
       {% for listing in latest_listings %}
       <article class="rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden hover:border-champagne/50 transition-colors">
         <a href="{% url 'listing_detail' listing.public_uuid %}" class="block aspect-[4/3] bg-slate/30">
-          {% if listing.image %}
-          <img src="{{ request.scheme }}://{{ request.get_host }}{{ listing.image.url }}" alt="{{ listing.title }}" class="w-full h-full object-cover">
-          {% elif listing.image_url %}
-          <img src="{{ listing.image_url }}" alt="{{ listing.title }}" class="w-full h-full object-cover">
-          {% else %}
-          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="{{ listing.title }}" class="w-full h-full object-cover">
-          {% endif %}
+          <img src="{% listing_card_image_url listing %}" alt="{{ listing.title }}" width="720" height="540" class="w-full h-full object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" decoding="async"{% if forloop.counter <= 3 %} fetchpriority="high" loading="eager"{% else %} fetchpriority="low" loading="lazy"{% endif %}>
         </a>
         <div class="p-5">
           <a href="{% url 'listing_detail' listing.public_uuid %}" class="font-sans font-bold text-ivory hover:text-champagne transition-colors line-clamp-2">{{ listing.title }}</a>
