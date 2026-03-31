@@ -190,6 +190,41 @@ class Employee(models.Model):
         return (self.photo_url or '').strip()
 
 
+class TeamPageSettings(models.Model):
+    """Настройки страницы «Команда», редактируемые через админку."""
+    section_badge = models.CharField(
+        'Бейдж секции',
+        max_length=80,
+        default='[ КОМАНДА ]',
+        help_text='Короткий верхний бейдж над заголовком.',
+    )
+    section_title = models.CharField(
+        'Заголовок секции',
+        max_length=255,
+        default='Наши сотрудники',
+    )
+    section_description = models.TextField(
+        'Описание секции',
+        default='Профессионалы, которые сопровождают сделки с недвижимостью: подбор объектов, переговоры, юридическая проверка и поддержка на каждом этапе.',
+    )
+    profile_label = models.CharField(
+        'Заголовок на обороте карточки',
+        max_length=80,
+        default='Профиль',
+    )
+    empty_bio_fallback = models.TextField(
+        'Текст по умолчанию (если bio пустой)',
+        default='Специалист агентства «Открытая Сделка». Поможет с подбором объекта, переговорами и сопровождением сделки.',
+    )
+
+    class Meta:
+        verbose_name = 'Настройки страницы «Команда»'
+        verbose_name_plural = 'Настройки страницы «Команда»'
+
+    def __str__(self):
+        return 'Настройки страницы «Команда»'
+
+
 class FeaturedMedia(models.Model):
     """Блок на главной: видео YouTube или картинка (управляется из админки)."""
     MEDIA_YOUTUBE = 'youtube'

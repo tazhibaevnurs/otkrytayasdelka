@@ -202,3 +202,153 @@ body {
 #navbar .md\:flex {
   flex-wrap: nowrap;
 }
+
+/* Team cards: более компактно + мягкие эффекты (как в референсе) */
+.team-grid .team-card {
+  position: relative;
+  backdrop-filter: blur(1px);
+}
+.team-grid .team-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(201, 168, 76, 0.06) 0%, rgba(201, 168, 76, 0) 40%);
+}
+.team-grid .team-card:hover {
+  border-color: rgba(201, 168, 76, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+}
+.team-grid .team-photo-wrap {
+  isolation: isolate;
+}
+.team-grid .team-photo-full .team-photo {
+  height: 100%;
+}
+.team-grid .team-front-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(13, 13, 18, 0) 0%, rgba(13, 13, 18, 0.82) 56%, rgba(13, 13, 18, 0.94) 100%);
+}
+.team-grid .team-front-overlay h2,
+.team-grid .team-front-overlay p {
+  color: #FAF8F5 !important;
+}
+.team-grid .team-photo {
+  transition: transform 0.4s ease, filter 0.4s ease;
+  filter: saturate(1.03) contrast(1.03);
+}
+.team-grid .team-card:hover .team-photo {
+  transform: scale(1.035);
+  filter: saturate(1.08) contrast(1.06);
+}
+.team-grid .team-photo-glow {
+  position: absolute;
+  left: 50%;
+  bottom: -12%;
+  transform: translateX(-50%);
+  width: 72%;
+  height: 42%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.34) 0%, rgba(201, 168, 76, 0) 72%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 3D flip: на hover показываем детальную инфо */
+.team-card-scene {
+  perspective: 1200px;
+  aspect-ratio: 3 / 4;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: transparent;
+  isolation: isolate;
+}
+.team-card-inner {
+  position: relative;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.62s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+.team-card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: transform 0.62s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s ease;
+}
+.team-card-front {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+.team-card-back {
+  transform: rotateY(180deg);
+  justify-content: center;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+}
+.team-card-scene:hover .team-card-front,
+.team-card-scene:focus-within .team-card-front {
+  transform: rotateY(-180deg);
+  opacity: 0;
+}
+.team-card-scene:hover .team-card-back,
+.team-card-scene:focus-within .team-card-back {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+.team-back-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 2px solid rgba(201, 168, 76, 0.55);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+/* На тач-экранах даем быстрый просмотр по нажатию */
+@media (hover: none) {
+  .team-card-scene:active .team-card-front {
+    transform: rotateY(-180deg);
+    opacity: 0;
+  }
+  .team-card-scene:active .team-card-back {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+@media (min-width: 640px) {
+  .team-back-avatar { width: 66px; height: 66px; }
+}
+
+/* Светлая тема: карточки команды должны оставаться контрастными */
+html[data-theme="light"] .team-grid .team-card-front {
+  background-color: rgba(13, 13, 18, 0.22) !important;
+  border-color: rgba(201, 168, 76, 0.42) !important;
+}
+html[data-theme="light"] .team-grid .team-front-overlay {
+  background: linear-gradient(180deg, rgba(13, 13, 18, 0) 0%, rgba(13, 13, 18, 0.78) 55%, rgba(13, 13, 18, 0.93) 100%) !important;
+}
+html[data-theme="light"] .team-grid .team-front-overlay h2,
+html[data-theme="light"] .team-grid .team-front-overlay p {
+  color: #FAF8F5 !important;
+}
+html[data-theme="light"] .team-grid .team-card-back {
+  background-color: rgba(13, 13, 18, 0.92) !important;
+  border-color: rgba(201, 168, 76, 0.5) !important;
+}
+html[data-theme="light"] .team-grid .team-card-back h3,
+html[data-theme="light"] .team-grid .team-card-back p {
+  color: #FAF8F5 !important;
+}

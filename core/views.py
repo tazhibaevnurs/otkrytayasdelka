@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.templatetags.static import static
 from django.urls import reverse
 from .forms import ContactForm
-from .models import Employee, FeaturedMedia, SectionImage, Review
+from .models import Employee, FeaturedMedia, SectionImage, Review, TeamPageSettings
 from listings.models import Listing
 
 
@@ -40,7 +40,22 @@ def home(request):
 def team(request):
     """Страница сотрудников."""
     employees = Employee.objects.filter(is_active=True)
-    return render(request, 'core/team.html', {'employees': employees})
+    settings_obj = TeamPageSettings.objects.first()
+    context = {
+        'employees': employees,
+        'team_badge': settings_obj.section_badge if settings_obj else '[ КОМАНДА ]',
+        'team_title': settings_obj.section_title if settings_obj else 'Наши сотрудники',
+        'team_description': settings_obj.section_description if settings_obj else (
+            'Профессионалы, которые сопровождают сделки с недвижимостью: подбор объектов, '
+            'переговоры, юридическая проверка и поддержка на каждом этапе.'
+        ),
+        'team_profile_label': settings_obj.profile_label if settings_obj else 'Профиль',
+        'team_empty_bio_fallback': settings_obj.empty_bio_fallback if settings_obj else (
+            'Специалист агентства «Открытая Сделка». Поможет с подбором объекта, '
+            'переговорами и сопровождением сделки.'
+        ),
+    }
+    return render(request, 'core/team.html', context)
 
 
 def about(request):

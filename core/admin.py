@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Employee, FeaturedMedia, SectionImage, Review, ContactRequest
+from .models import Employee, FeaturedMedia, SectionImage, Review, ContactRequest, TeamPageSettings
 
 
 @admin.register(SectionImage)
@@ -60,6 +60,20 @@ class EmployeeAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 8px;" alt="" />', url)
         return format_html('<span style="color: #069;">Файл</span>')
     admin_photo.short_description = 'Фото'
+
+
+@admin.register(TeamPageSettings)
+class TeamPageSettingsAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Верхняя часть', {'fields': ('section_badge', 'section_title', 'section_description')}),
+        ('Карточка сотрудника (оборот)', {'fields': ('profile_label', 'empty_bio_fallback')}),
+    )
+
+    def has_add_permission(self, request):
+        # Singleton: одна запись настроек на весь сайт.
+        if TeamPageSettings.objects.exists():
+            return False
+        return super().has_add_permission(request)
 
 
 @admin.register(Review)

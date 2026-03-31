@@ -7,31 +7,55 @@
 {% block content %}
 <section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen">
   <div class="max-w-6xl mx-auto">
-    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3">[ КОМАНДА ]</p>
-    <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-4">Наши сотрудники</h1>
-    <p class="text-ivory/80 mb-12 max-w-2xl">Профессионалы, которые сопровождают сделки с недвижимостью: подбор объектов, переговоры, юридическая проверка и поддержка на каждом этапе.</p>
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3">{{ team_badge }}</p>
+    <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-4">{{ team_title }}</h1>
+    <p class="text-ivory/80 mb-12 max-w-2xl">{{ team_description }}</p>
 
     {% if employees %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+    <div class="team-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 items-stretch">
       {% for employee in employees %}
-      <article class="flex flex-col h-full rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden hover:border-champagne/50 transition-colors duration-300">
-        <div class="aspect-[4/5] sm:aspect-[3/4] bg-slate/40 overflow-hidden flex-shrink-0">
-          {% if employee.photo %}
-          <img src="{{ request.scheme }}://{{ request.get_host }}{{ employee.photo.url }}" alt="{{ employee.full_name }}" class="w-full h-full object-cover object-top opacity-95">
-          {% elif employee.photo_url %}
-          <img src="{{ employee.photo_url }}" alt="{{ employee.full_name }}" class="w-full h-full object-cover object-top opacity-95">
-          {% else %}
-          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80" alt="" class="w-full h-full object-cover opacity-80">
-          {% endif %}
-        </div>
-        <div class="flex flex-1 flex-col p-5 sm:p-6 min-h-0">
-          <h2 class="font-sans font-bold text-lg text-champagne mb-1">{{ employee.full_name }}</h2>
-          {% if employee.position %}
-          <p class="text-champagne/80 text-sm font-mono mb-3">{{ employee.position }}</p>
-          {% endif %}
-          {% if employee.bio %}
-          <p class="text-ivory/75 text-sm leading-relaxed flex-1">{{ employee.bio }}</p>
-          {% endif %}
+      <article class="team-card team-card-scene">
+        <div class="team-card-inner h-full">
+          <div class="team-card-face team-card-front rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden">
+            <div class="team-photo-wrap team-photo-full bg-slate/40 overflow-hidden relative h-full">
+              {% if employee.photo %}
+              <img src="{{ request.scheme }}://{{ request.get_host }}{{ employee.photo.url }}" alt="{{ employee.full_name }}" class="team-photo w-full h-full object-cover object-top opacity-95">
+              {% elif employee.photo_url %}
+              <img src="{{ employee.photo_url }}" alt="{{ employee.full_name }}" class="team-photo w-full h-full object-cover object-top opacity-95">
+              {% else %}
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=560&q=80" alt="" class="team-photo w-full h-full object-cover opacity-80">
+              {% endif %}
+              <span class="team-photo-glow" aria-hidden="true"></span>
+              <div class="team-front-overlay p-3 sm:p-4">
+                <h2 class="font-sans font-bold text-sm sm:text-base text-ivory mb-0.5 leading-tight drop-shadow">{{ employee.full_name }}</h2>
+                {% if employee.position %}
+                <p class="text-ivory/90 text-[11px] sm:text-xs font-mono mb-1.5 drop-shadow">{{ employee.position }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="team-card-face team-card-back rounded-2xl bg-slate/30 border border-champagne/40 p-3 sm:p-4">
+            <div class="team-back-avatar mb-3">
+              {% if employee.photo %}
+              <img src="{{ request.scheme }}://{{ request.get_host }}{{ employee.photo.url }}" alt="{{ employee.full_name }}" class="w-full h-full object-cover object-top">
+              {% elif employee.photo_url %}
+              <img src="{{ employee.photo_url }}" alt="{{ employee.full_name }}" class="w-full h-full object-cover object-top">
+              {% else %}
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=240&q=80" alt="" class="w-full h-full object-cover">
+              {% endif %}
+            </div>
+            <p class="text-champagne text-[10px] sm:text-xs font-mono uppercase tracking-widest mb-2">{{ team_profile_label }}</p>
+            <h3 class="font-sans font-bold text-ivory text-sm sm:text-base mb-1.5">{{ employee.full_name }}</h3>
+            {% if employee.position %}
+            <p class="text-champagne/85 text-[11px] sm:text-xs font-mono mb-2">{{ employee.position }}</p>
+            {% endif %}
+            {% if employee.bio %}
+            <p class="text-ivory/80 text-[11px] sm:text-xs leading-relaxed line-clamp-4">{{ employee.bio }}</p>
+            {% else %}
+            <p class="text-ivory/70 text-[11px] sm:text-xs leading-relaxed">{{ team_empty_bio_fallback }}</p>
+            {% endif %}
+          </div>
         </div>
       </article>
       {% endfor %}
