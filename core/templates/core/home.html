@@ -46,18 +46,18 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
       </a>
     </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
       {% for listing in latest_listings %}
       <article class="rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden hover:border-champagne/50 transition-colors">
         <a href="{% url 'listing_detail' listing.public_uuid %}" class="block aspect-[4/3] bg-slate/30">
-          <img src="{% listing_card_image_url listing %}" alt="{{ listing.title }}" width="720" height="540" class="w-full h-full object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" decoding="async"{% if forloop.counter <= 3 %} fetchpriority="high" loading="eager"{% else %} fetchpriority="low" loading="lazy"{% endif %}>
+          <img src="{% listing_card_image_url listing %}" alt="{{ listing.title }}" width="720" height="540" class="w-full h-full object-cover" sizes="(max-width: 1024px) 50vw, 33vw" decoding="async"{% if forloop.counter <= 3 %} fetchpriority="high" loading="eager"{% else %} fetchpriority="low" loading="lazy"{% endif %}>
         </a>
-        <div class="p-5">
-          <a href="{% url 'listing_detail' listing.public_uuid %}" class="font-sans font-bold text-ivory hover:text-champagne transition-colors line-clamp-2">{{ listing.title }}</a>
-          <p class="text-ivory/70 text-sm mt-2 line-clamp-1">{{ listing.address }}</p>
-          <div class="mt-4 flex items-center justify-between gap-3">
-            <span class="text-champagne font-mono text-sm">{{ listing.price }}</span>
-            <span class="text-ivory/60 text-xs">{{ listing.created_at|date:"d.m.Y" }}</span>
+        <div class="p-3 sm:p-5">
+          <a href="{% url 'listing_detail' listing.public_uuid %}" class="font-sans font-bold text-ivory text-sm sm:text-base hover:text-champagne transition-colors line-clamp-2">{{ listing.title }}</a>
+          <p class="text-ivory/70 text-xs sm:text-sm mt-1.5 sm:mt-2 line-clamp-1">{{ listing.address }}</p>
+          <div class="mt-2.5 sm:mt-4 flex items-center justify-between gap-2 sm:gap-3">
+            <span class="text-champagne font-mono text-xs sm:text-sm">{{ listing.price }}</span>
+            <span class="text-ivory/60 text-[10px] sm:text-xs">{{ listing.created_at|date:"d.m.Y" }}</span>
           </div>
         </div>
       </article>

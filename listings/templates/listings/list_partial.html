@@ -1,21 +1,21 @@
 {% load listing_images %}
 {% if listings %}
-<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 items-stretch">
   {% for listing in listings %}
   <article class="listing-card flex flex-col h-full rounded-2xl bg-slate/20 border border-champagne/30 overflow-hidden hover:border-champagne/50 transition-all duration-300 hover-lift">
     <a href="{% url 'listing_detail' listing.public_uuid %}" class="block aspect-[4/3] bg-slate/30 relative overflow-hidden shrink-0">
       <span class="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-lg text-xs font-medium {% if listing.listing_type == 'sale' %}bg-champagne/90 text-obsidian{% else %}bg-ivory/20 text-ivory border border-ivory/40{% endif %}">{% if listing.listing_type == 'sale' %}Продажа{% else %}Покупка{% endif %}</span>
-      <img src="{% listing_card_image_url listing %}" alt="{{ listing.title }}" width="720" height="540" class="w-full h-full object-cover opacity-95" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" decoding="async"{% if forloop.counter <= 3 %} fetchpriority="high" loading="eager"{% else %} fetchpriority="low" loading="lazy"{% endif %}>
+      <img src="{% listing_card_image_url listing %}" alt="{{ listing.title }}" width="720" height="540" class="w-full h-full object-cover opacity-95" sizes="(max-width: 1024px) 50vw, 33vw" decoding="async"{% if forloop.counter <= 3 %} fetchpriority="high" loading="eager"{% else %} fetchpriority="low" loading="lazy"{% endif %}>
     </a>
-    <div class="p-5 sm:p-6 flex flex-col flex-1 min-h-0">
+    <div class="p-3 sm:p-6 flex flex-col flex-1 min-h-0">
       <a href="{% url 'listing_detail' listing.public_uuid %}">
-        <h3 class="font-sans font-bold text-lg text-ivory mb-2 hover:text-champagne transition-colors line-clamp-2">{{ listing.title }}</h3>
+        <h3 class="font-sans font-bold text-sm sm:text-lg text-ivory mb-1.5 hover:text-champagne transition-colors line-clamp-2">{{ listing.title }}</h3>
       </a>
-      <p class="text-ivory/70 text-sm flex items-center gap-2 mb-3 line-clamp-2">
+      <p class="text-ivory/70 text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 line-clamp-2">
         <svg class="w-4 h-4 text-champagne/80 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         {{ listing.address }}
       </p>
-      <div class="flex gap-4 text-sm text-ivory/70 mb-4">
+      <div class="flex gap-2 sm:gap-4 text-[11px] sm:text-sm text-ivory/70 mb-2.5 sm:mb-4">
         <span class="flex items-center gap-1.5">
           <svg class="w-4 h-4 text-champagne/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           {{ listing.rooms }} комн.
@@ -25,13 +25,13 @@
           {{ listing.area }} м²
         </span>
       </div>
-      <div class="flex flex-wrap gap-2 mb-4">
-        <span class="px-2 py-1 rounded-md border border-champagne/30 text-xs text-ivory/80">
+      <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-2.5 sm:mb-4">
+        <span class="px-1.5 sm:px-2 py-1 rounded-md border border-champagne/30 text-[10px] sm:text-xs text-ivory/80">
           {% if listing.is_land_plot %}Земельный участок{% elif listing.property_category == 'commercial' %}Коммерческое помещение{% else %}Жилое{% endif %}
         </span>
       </div>
-      <p class="font-mono text-champagne font-semibold mb-4">{{ listing.price }}</p>
-      <a href="{% url 'listing_detail' listing.public_uuid %}" class="inline-flex items-center gap-2 text-sm font-medium text-champagne hover:text-ivory transition-colors mt-auto">
+      <p class="font-mono text-champagne font-semibold text-xs sm:text-base mb-2.5 sm:mb-4">{{ listing.price }}</p>
+      <a href="{% url 'listing_detail' listing.public_uuid %}" class="inline-flex items-center gap-1 sm:gap-2 text-[11px] sm:text-sm font-medium text-champagne hover:text-ivory transition-colors mt-auto">
         Узнать подробнее
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
       </a>

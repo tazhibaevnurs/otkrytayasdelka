@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Ошибка отправки формы{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen">
+  <div class="max-w-2xl mx-auto">
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3">[ 403 ]</p>
+    <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-4">Не удалось отправить форму</h1>
+    <p class="text-ivory/80 text-base sm:text-lg mb-8">
+      Сессия страницы устарела или запрос был отклонен системой безопасности.
+      Обновите страницу и отправьте форму еще раз.
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a href="{{ request.path }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] bg-champagne text-obsidian font-semibold btn-magnetic relative">
+        <span class="relative z-10">Обновить страницу</span>
+        <span class="btn-slide bg-ivory/20"></span>
+      </a>
+      <a href="{% url 'contacts' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] border border-champagne/40 text-champagne font-semibold hover:bg-champagne/10 transition-colors">
+        Контакты
+      </a>
+      <a href="{% url 'home' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] border border-slate/40 text-ivory/80 hover:text-ivory hover:border-slate/70 transition-colors">
+        На главную
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

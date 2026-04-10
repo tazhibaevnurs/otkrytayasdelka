@@ -9,7 +9,9 @@ mimetypes.add_type('image/avif', '.avif')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+# Безопасное значение по умолчанию: на сервере DEBUG должен быть выключен.
+# Для локальной разработки включайте явно: DJANGO_DEBUG=1
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
 # Секрет подписи — только из окружения в production; в dev допускается слабый fallback.
 _secret = (os.environ.get('DJANGO_SECRET_KEY') or '').strip()
@@ -262,6 +264,9 @@ REST_FRAMEWORK = {
     },
     'EXCEPTION_HANDLER': 'config.exceptions.custom_exception_handler',
 }
+
+# Вместо стандартной тех-страницы CSRF 403 показываем аккуратную страницу для пользователя.
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 # Production: за прокси (nginx, load balancer)
 if not DEBUG:
