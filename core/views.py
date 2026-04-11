@@ -1,3 +1,7 @@
+from pathlib import Path
+
+from django.conf import settings
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.templatetags.static import static
 from django.urls import reverse
@@ -103,3 +107,15 @@ def privacy(request):
 def csrf_failure(request, reason=''):
     """Пользовательская страница ошибки CSRF (без технических деталей для посетителя)."""
     return render(request, 'core/csrf_error.html', status=403)
+
+
+def brand_logo_svg(request):
+    """Логотип без привязки к collectstatic/WhiteNoise — надёжно на любом деплое."""
+    path = Path(settings.BASE_DIR) / 'static' / 'img' / 'logo.svg'
+    try:
+        data = path.read_bytes()
+    except OSError:
+        raise Http404('Logo file missing') from None
+    resp = HttpResponse(data, content_type='image/svg+xml; charset=utf-8')
+    resp['Cache-Control'] = 'public, max-age=86400'
+    return resp

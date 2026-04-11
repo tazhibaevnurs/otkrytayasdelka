@@ -15,16 +15,16 @@
   <meta property="og:title" content="Открытая Сделка — Агентство недвижимости">
   <meta property="og:description" content="Агентство недвижимости «Открытая Сделка». Помощь в покупке и продаже недвижимости в Кыргызстане. Подбор объектов, сопровождение сделок, юридическая проверка.">
   <meta property="og:url" content="{% block og_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
-  <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.svg' %}{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% url 'brand_logo_svg' %}{% endblock %}">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:locale:alternate" content="ky_KG">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Открытая Сделка — Агентство недвижимости">
   <meta name="twitter:description" content="Агентство недвижимости «Открытая Сделка». Помощь в покупке и продаже недвижимости в Кыргызстане. Подбор объектов, сопровождение сделок, юридическая проверка.">
-  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.svg' %}">
-  <link rel="icon" type="image/svg+xml" href="{% static 'img/logo.svg' %}">
-  <link rel="apple-touch-icon" href="{% static 'img/logo.svg' %}">
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% url 'brand_logo_svg' %}">
+  <link rel="icon" type="image/svg+xml" href="{% url 'brand_logo_svg' %}">
+  <link rel="apple-touch-icon" href="{% url 'brand_logo_svg' %}">
 
   <!-- JSON-LD: структурированные данные для Google (schema.org) -->
   <script type="application/ld+json">
@@ -35,8 +35,8 @@
     "alternateName": "Otkrytaya Sdelka",
     "description": "Агентство недвижимости «Открытая Сделка» — помощь в покупке и продаже недвижимости в Кыргызстане. Профессионалы с многолетним опытом.",
     "url": "https://otkrytayasdelka.kg",
-    "logo": "https://otkrytayasdelka.kg{% static 'img/logo.svg' %}",
-    "image": "https://otkrytayasdelka.kg{% static 'img/logo.svg' %}",
+    "logo": "https://otkrytayasdelka.kg{% url 'brand_logo_svg' %}",
+    "image": "https://otkrytayasdelka.kg{% url 'brand_logo_svg' %}",
     "telephone": "+996553553663",
     "email": "otkrytaya.sdelka@gmail.com",
     "address": {
@@ -104,7 +104,7 @@
   <nav id="navbar" class="fixed left-1/2 -translate-x-1/2 top-6 z-50 flex items-center justify-between gap-4 px-5 py-2.5 rounded-[2rem] transition-all duration-500 w-[92vw] max-w-[880px] min-h-[52px]"
        data-is-home="{% if request.resolver_match.url_name == 'home' %}1{% else %}0{% endif %}">
     <a href="{% url 'home' %}" class="hover-lift transition-transform text-inherit shrink-0">
-      <img src="{% static 'img/logo.svg' %}" alt="Открытая Сделка" class="h-9 sm:h-11 w-auto object-contain" />
+      <img src="{% url 'brand_logo_svg' %}" alt="Открытая Сделка" width="44" height="44" class="h-9 sm:h-11 w-auto object-contain" />
     </a>
     <div class="hidden md:flex items-center gap-5 flex-1 justify-center">
       <a href="{% url 'home' %}" class="text-sm font-medium hover-lift transition-transform opacity-90 hover:opacity-100 whitespace-nowrap py-1">Главная</a>
@@ -159,7 +159,7 @@
   <footer class="bg-obsidian rounded-t-[4rem] text-ivory py-16 px-6 w-full">
     <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
       <div>
-        <img src="{% static 'img/logo.svg' %}" alt="Открытая Сделка" class="h-10 w-auto object-contain mb-2" />
+        <img src="{% url 'brand_logo_svg' %}" alt="Открытая Сделка" width="40" height="40" class="h-10 w-auto object-contain mb-2" />
         <p class="font-sans font-bold text-xl tracking-tighter">Открытая Сделка</p>
         <p class="text-ivory/70 text-sm mt-1">Агентство недвижимости. Прозрачные сделки и надёжные партнёрства.</p>
       </div>

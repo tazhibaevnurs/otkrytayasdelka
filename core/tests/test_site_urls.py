@@ -25,6 +25,7 @@ class NamedUrlsResolveTests(TestCase):
             'contacts',
             'privacy',
             'listing_list',
+            'brand_logo_svg',
         ):
             with self.subTest(name=name):
                 reverse(name)
@@ -69,6 +70,12 @@ class PublicPagesSmokeTests(TestCase):
 
     def setUp(self):
         self.client = Client()
+
+    def test_brand_logo_svg_returns_svg(self):
+        r = self.client.get(reverse('brand_logo_svg'))
+        self.assertEqual(r.status_code, 200)
+        self.assertIn('svg', (r.get('Content-Type') or '').lower())
+        self.assertIn(b'<svg', r.content[:500])
 
     def test_static_pages_return_200(self):
         for path in (
