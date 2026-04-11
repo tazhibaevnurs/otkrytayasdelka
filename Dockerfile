@@ -34,4 +34,5 @@ EXPOSE 8000
 
 # Запуск через entrypoint (migrate + gunicorn)
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--access-logfile", "-", "--error-logfile", "-"]
+# --timeout: согласован с proxy_read_timeout в nginx (см. deploy/nginx-otkrytayasdelka.conf)
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-"]

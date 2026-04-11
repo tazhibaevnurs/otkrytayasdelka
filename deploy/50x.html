@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Сервис временно недоступен</title>
+  <style>
+    :root { --bg: #0d0d12; --fg: #f5f0e8; --muted: #a8a29e; --accent: #c9a84c; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--fg);
+      padding: 1.5rem; text-align: center; line-height: 1.6;
+    }
+    h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.75rem; letter-spacing: 0.02em; }
+    p { color: var(--muted); font-size: 0.95rem; max-width: 28rem; margin: 0 auto 1.25rem; }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(201, 168, 76, 0.4); }
+    a:hover { border-bottom-color: var(--accent); }
+    .code { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--muted); margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Сайт сейчас не отвечает</h1>
+    <p>Попробуйте обновить страницу через минуту. Если ошибка повторяется, возможно, идёт обновление сервера или временные перегрузки.</p>
+    <p><a href="/">На главную</a></p>
+    <p class="code">Сообщение об ошибке сервера (502–504)</p>
+  </div>
+</body>
+</html>
