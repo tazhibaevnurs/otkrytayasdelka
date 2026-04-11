@@ -109,13 +109,22 @@ def csrf_failure(request, reason=''):
     return render(request, 'core/csrf_error.html', status=403)
 
 
-def brand_logo_svg(request):
-    """Логотип без привязки к collectstatic/WhiteNoise — надёжно на любом деплое."""
-    path = Path(settings.BASE_DIR) / 'static' / 'img' / 'logo.svg'
-    try:
-        data = path.read_bytes()
-    except OSError:
-        raise Http404('Logo file missing') from None
-    resp = HttpResponse(data, content_type='image/svg+xml; charset=utf-8')
-    resp['Cache-Control'] = 'public, max-age=86400'
-    return resp
+def brand_logo(request):
+    """Единый логотип сайта: основной файл — static/img/logo.png (остальные — запасные варианты)."""
+    base = Path(settings.BASE_DIR) / 'static' / 'img'
+    candidates = (
+        ('logo.png', 'image/png'),
+        ('logo.webp', 'image/webp'),
+        ('logo.svg', 'image/svg+xml; charset=utf-8'),
+    )
+    for name, ctype in candidates:
+        path = base / name
+        if path.is_file():
+            try:
+                data = path.read_bytes()
+            except OSError:
+                continue
+            resp = HttpResponse(data, content_type=ctype)
+            resp['Cache-Control'] = 'public, max-age=86400'
+            return resp
+    raise Http404('Brand logo files missing') from None

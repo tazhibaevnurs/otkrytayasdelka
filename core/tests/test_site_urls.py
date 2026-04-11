@@ -25,7 +25,7 @@ class NamedUrlsResolveTests(TestCase):
             'contacts',
             'privacy',
             'listing_list',
-            'brand_logo_svg',
+            'brand_logo',
         ):
             with self.subTest(name=name):
                 reverse(name)
@@ -71,11 +71,13 @@ class PublicPagesSmokeTests(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_brand_logo_svg_returns_svg(self):
-        r = self.client.get(reverse('brand_logo_svg'))
+    def test_brand_logo_returns_image(self):
+        r = self.client.get(reverse('brand_logo'))
         self.assertEqual(r.status_code, 200)
-        self.assertIn('svg', (r.get('Content-Type') or '').lower())
-        self.assertIn(b'<svg', r.content[:500])
+        self.assertIn('image/', (r.get('Content-Type') or '').lower())
+        # В репозитории — static/img/logo.png (основной логотип)
+        self.assertEqual(r.content[:4], b'\x89PNG', msg='Ожидается PNG из static/img/logo.png')
+        self.assertIn('png', (r.get('Content-Type') or '').lower())
 
     def test_static_pages_return_200(self):
         for path in (
