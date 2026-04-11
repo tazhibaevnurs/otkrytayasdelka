@@ -78,6 +78,12 @@ html[data-theme="light"] footer a { color: rgba(250, 248, 245, 0.9); }
 html[data-theme="light"] .border-champagne\/30 { border-color: var(--theme-border); }
 html[data-theme="light"] .border-champagne\/40 { border-color: rgba(201, 168, 76, 0.5); }
 html[data-theme="light"] .noise-overlay { opacity: 0.03; }
+/* Hero (секции с тёмным градиентом поверх фото): в светлой теме не красить ivory в тёмный */
+html[data-theme="light"] .hero-section .text-ivory { color: #FAF8F5 !important; }
+html[data-theme="light"] .hero-section .text-ivory\/90 { color: rgba(250, 248, 245, 0.92) !important; }
+html[data-theme="light"] .hero-section .text-ivory\/80 { color: rgba(250, 248, 245, 0.88) !important; }
+html[data-theme="light"] .hero-section .text-ivory\/70 { color: rgba(250, 248, 245, 0.8) !important; }
+html[data-theme="light"] .hero-section .text-ivory\/60 { color: rgba(250, 248, 245, 0.72) !important; }
 /*
  * Главная + светлая тема: светлый текст только у полосы навбара над героем,
  * не у #services-menu / #mobile-menu (иначе белое на белом).

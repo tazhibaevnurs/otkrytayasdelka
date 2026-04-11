@@ -10,7 +10,7 @@
 
 {% block content %}
 <!-- Hero: <img> вместо background — LCP, fetchpriority, веб-копия из админки -->
-<section id="hero" class="relative h-[100dvh] flex flex-col justify-end overflow-hidden">
+<section id="hero" class="hero-section relative h-[100dvh] flex flex-col justify-end overflow-hidden">
   <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
     <img src="{{ home_hero_url }}" alt="" width="1920" height="1080" fetchpriority="high" decoding="async" class="h-full w-full object-cover object-center">
   </div>
