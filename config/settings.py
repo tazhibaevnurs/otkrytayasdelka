@@ -194,7 +194,8 @@ TIME_ZONE = 'Asia/Bishkek'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+# Ведущий '/' обязателен: иначе {% static %} даёт относительный путь и на /foo/ браузер запрашивает /foo/static/...
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # WhiteNoise ругается, если каталога нет; в .gitignore — создаём при старте (collectstatic тоже заполнит).
 try:

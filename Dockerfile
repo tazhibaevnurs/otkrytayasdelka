@@ -21,8 +21,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Код приложения
 COPY . .
 
-# Собираем статику
-RUN python manage.py collectstatic --noinput --clear 2>/dev/null || true
+# Собираем статику (нужен SECRET_KEY на этапе import settings; runtime-ключ задаётся в .env)
+RUN DJANGO_SECRET_KEY=collectstatic-build-only-not-for-runtime python manage.py collectstatic --noinput --clear
 
 # Права на entrypoint
 RUN chmod +x docker-entrypoint.sh
