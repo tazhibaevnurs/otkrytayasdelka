@@ -35,4 +35,5 @@ EXPOSE 8000
 # Запуск через entrypoint (migrate + gunicorn)
 ENTRYPOINT ["./docker-entrypoint.sh"]
 # --timeout: согласован с proxy_read_timeout в nginx (см. deploy/nginx-otkrytayasdelka.conf)
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-"]
+# --graceful-timeout/keep-alive/max-requests уменьшают риск "зависших" воркеров и upstream timeout.
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", "--timeout", "120", "--graceful-timeout", "30", "--keep-alive", "10", "--max-requests", "1000", "--max-requests-jitter", "100", "--worker-tmp-dir", "/dev/shm", "--access-logfile", "-", "--error-logfile", "-"]
