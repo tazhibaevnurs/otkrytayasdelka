@@ -35,7 +35,7 @@ body.theme-text { color: var(--theme-text); }
 
 /* Светлая тема: переопределение секций и текста */
 html[data-theme="light"] main { background-color: var(--theme-bg) !important; }
-html[data-theme="light"] .bg-obsidian { background-color: var(--theme-bg) !important; }
+html[data-theme="light"] main .bg-obsidian { background-color: var(--theme-bg) !important; }
 /* Выпадающее меню и мобильное меню — светлый фон в светлой теме */
 html[data-theme="light"] #services-menu,
 html[data-theme="light"] #mobile-menu {
@@ -71,10 +71,40 @@ html[data-theme="light"] .text-ivory\/80 { color: var(--theme-text-muted) !impor
 html[data-theme="light"] .text-ivory\/70 { color: #4a4a55 !important; }
 html[data-theme="light"] .text-ivory\/60 { color: #5a5a65 !important; }
 html[data-theme="light"] .text-slate { color: var(--theme-text) !important; }
-html[data-theme="light"] footer { background-color: #1a1a22 !important; color: #FAF8F5; }
-html[data-theme="light"] footer .text-ivory\/70 { color: rgba(250, 248, 245, 0.85) !important; }
-html[data-theme="light"] footer .text-ivory\/60 { color: rgba(250, 248, 245, 0.75) !important; }
-html[data-theme="light"] footer a { color: rgba(250, 248, 245, 0.9); }
+html[data-theme="light"] footer.bg-obsidian {
+  background-color: #f4f1eb !important;
+  color: #1a1a22 !important;
+}
+html[data-theme="light"] footer .text-ivory {
+  color: #1a1a22 !important;
+}
+html[data-theme="light"] footer .text-ivory\/90 {
+  color: rgba(26, 26, 34, 0.9) !important;
+}
+html[data-theme="light"] footer .text-ivory\/70 {
+  color: rgba(26, 26, 34, 0.72) !important;
+}
+html[data-theme="light"] footer .text-ivory\/60 {
+  color: rgba(26, 26, 34, 0.64) !important;
+}
+html[data-theme="light"] footer .text-ivory\/45 {
+  color: rgba(26, 26, 34, 0.5) !important;
+}
+html[data-theme="light"] footer a {
+  color: rgba(26, 26, 34, 0.88) !important;
+}
+html[data-theme="light"] footer a:hover {
+  color: #9b7a22 !important;
+}
+html[data-theme="light"] footer .border-slate\/30 {
+  border-color: rgba(42, 42, 53, 0.18) !important;
+}
+html[data-theme="light"] footer svg.text-sky-400\/90 {
+  color: #0ea5e9 !important;
+}
+html[data-theme="light"] footer svg.group-hover\:text-sky-300 {
+  color: #0284c7 !important;
+}
 html[data-theme="light"] .border-champagne\/30 { border-color: var(--theme-border); }
 html[data-theme="light"] .border-champagne\/40 { border-color: rgba(201, 168, 76, 0.5); }
 html[data-theme="light"] .noise-overlay { opacity: 0.03; }
