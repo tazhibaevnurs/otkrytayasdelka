@@ -10,6 +10,11 @@ from .models import Employee, FeaturedMedia, SectionImage, Review, TeamPageSetti
 from listings.models import Listing
 
 
+def healthz(request):
+    """Liveness/readiness probe endpoint for Docker/Nginx health checks."""
+    return HttpResponse('ok', content_type='text/plain')
+
+
 def _section_image_url(key, request=None, default=''):
     """URL изображения секции по ключу."""
     obj = SectionImage.objects.filter(key=key).first()
