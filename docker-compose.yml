@@ -23,11 +23,11 @@ services:
       - app_data:/app/data
       - media_data:/app/media
     healthcheck:
-      test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', 8000, timeout=3); c.request('GET', '/healthz', headers={'X-Forwarded-Proto': 'https'}); r=c.getresponse(); raise SystemExit(0 if r.status == 200 else 1)"]
-      interval: 30s
+      test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', 8000, timeout=3); c.request('GET', '/healthz'); r=c.getresponse(); raise SystemExit(0 if r.status == 200 else 1)"]
+      interval: 20s
       timeout: 10s
-      retries: 3
-      start_period: 40s
+      retries: 5
+      start_period: 90s
 
 volumes:
   app_data:

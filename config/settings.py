@@ -44,6 +44,8 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', '1') == '1'
+    # Не редиректить liveness/readiness probe на HTTPS, иначе Docker healthcheck может флапать.
+    SECURE_REDIRECT_EXEMPT = [r'^healthz$']
     # HTTPS: HSTS (заголовок Strict-Transport-Security)
     SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_SECURE_HSTS_SECONDS', str(365 * 24 * 60 * 60)))
     SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('DJANGO_HSTS_INCLUDE_SUBDOMAINS', '1') == '1'
