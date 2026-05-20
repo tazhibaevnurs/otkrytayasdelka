@@ -23,9 +23,11 @@ services:
       - ./data:/app/data
       - ./media:/app/media
       - ./staticfiles:/app/staticfiles
+    # При забитых воркерах connect к :8000 может висеть >3s → TimeoutError и вечный unhealthy.
+    # timeout в HTTPConnection — запас на connect+ответ; timeout в compose — лимит на всю CMD.
     healthcheck:
-      test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', 8000, timeout=3); c.request('GET', '/healthz'); r=c.getresponse(); raise SystemExit(0 if r.status == 200 else 1)"]
-      interval: 20s
-      timeout: 10s
+      test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('127.0.0.1', 8000, timeout=20); c.request('GET', '/healthz'); r=c.getresponse(); raise SystemExit(0 if r.status == 200 else 1)"]
+      interval: 30s
+      timeout: 25s
       retries: 5
-      start_period: 90s
+      start_period: 120s
