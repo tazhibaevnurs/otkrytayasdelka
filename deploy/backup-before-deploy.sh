@@ -43,15 +43,25 @@ echo "[backup] dumpdata.json.gz ..."
     --indent 1' |
   gzip -c >"${DEST}/django.dumpdata.json.gz"
 
+# Не делаем source .env: в production-файлах часто строки в стиле docker/dotenv,
+# которые bash не может выполнить (например значение без KEY= на отдельной строке).
+# Берём только DATABASE_URL построчным разбором.
 _DB_URL="${DATABASE_URL:-}"
 if [[ -f .env ]]; then
-  set +u
-  set -a
-  # shellcheck disable=SC1091
-  source .env || true
-  set +u
-  set +a
-  _DB_URL="${DATABASE_URL:-${_DB_URL}}"
+  _line="$(grep -E '^[[:space:]]*DATABASE_URL=' .env 2>/dev/null | tail -n1 || true)"
+  if [[ -n "${_line}" ]]; then
+    _from_file="${_line#*=}"
+    _from_file="${_from_file%$'\r'}"
+    _from_file="$(printf '%s' "${_from_file}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+    if [[ "${_from_file}" == \"*\" ]]; then
+      _from_file="${_from_file#\"}"
+      _from_file="${_from_file%\"}"
+    elif [[ "${_from_file}" == \'*\' ]]; then
+      _from_file="${_from_file#\'}"
+      _from_file="${_from_file%\'}"
+    fi
+    _DB_URL="${_from_file}"
+  fi
 fi
 
 # Postgres: логический дамп через pg_dump (client внутри образа).
@@ -64,9 +74,12 @@ if [[ -n "${_DB_URL}" ]] && [[ "${_DB_URL}" == postgres* ]]; then
 fi
 
 # SQLite на хосте (параллельно с записью возможна неконсистентность при работающем web).
-if [[ (-z "${_DB_URL}" || "${_DB_URL}" != postgres* ]] && [[ -f ./data/db.sqlite3 ]]; then
-  echo "[backup] db.sqlite3 (копия файла на хосте) ..."
-  cp -a ./data/db.sqlite3 "${DEST}/db.sqlite3"
+# Без скобок в [[ ... ]] — на старых bash иначе syntax error около ']]'.
+if [[ -f ./data/db.sqlite3 ]]; then
+  if [[ -z "${_DB_URL}" ]] || [[ "${_DB_URL}" != postgres* ]]; then
+    echo "[backup] db.sqlite3 (копия файла на хосте) ..."
+    cp -a ./data/db.sqlite3 "${DEST}/db.sqlite3"
+  fi
 fi
 
 if [[ "${BACKUP_MEDIA:-0}" == "1" ]] && [[ -d ./media ]] && [[ -n "$(find ./media -mindepth 1 -print -quit 2>/dev/null)" ]]; then
