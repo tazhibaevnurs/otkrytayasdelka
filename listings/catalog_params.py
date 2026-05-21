@@ -15,6 +15,7 @@ MAX_CATALOG_PAGE = 10_000
 MAX_SEARCH_QUERY_LEN = 200
 MAX_AREA_VALUE = 2_147_483_647  # разумный потолок для м²
 MAX_ROOMS_DIGIT = 99  # одиночный фильтр «ровно N комнат»
+MAX_PRICE_USD = 55_000_000  # потолок GET price_min/max (анти‑DoS)
 
 
 @dataclass
@@ -30,6 +31,10 @@ class CatalogParams:
     q: str
     property_category: str  # '', 'land', 'residential', 'commercial'
     land_plot_legacy: bool
+    price_min: str  # сырое из GET для поля ввода
+    price_max: str
+    price_min_usd: int | None  # None — ограничение не задано
+    price_max_usd: int | None
 
 
 def _clamp_page(raw: str | None) -> int:
@@ -56,6 +61,19 @@ def _parse_rooms(raw: str | None) -> tuple[str, int | None]:
     if not s.isdigit():
         return s, None
     n = min(max(int(s), 0), MAX_ROOMS_DIGIT)
+    return str(n), n
+
+
+def _digits_only_positive(raw: str | None, cap: int) -> tuple[str, int | None]:
+    """Строки с пробелами/табуляцией; пустое — нет ограничения."""
+    if raw is None:
+        return '', None
+    s = ''.join(c for c in str(raw).strip().replace('\u00a0', ' ') if c.isdigit())
+    if not s:
+        return '', None
+    n = min(int(s), cap)
+    if n < 0:
+        return '', None
     return str(n), n
 
 
@@ -100,6 +118,12 @@ def parse_listing_catalog_get(GET) -> CatalogParams:
     q = _parse_q(GET.get('q'))
     prop, land_legacy = _parse_property_category(GET.get('property_category'), GET.get('land_plot'))
 
+    pm_s, pm_i = _digits_only_positive(GET.get('price_min'), MAX_PRICE_USD)
+    px_s, px_i = _digits_only_positive(GET.get('price_max'), MAX_PRICE_USD)
+    if pm_i is not None and px_i is not None and pm_i > px_i:
+        pm_i, px_i = px_i, pm_i
+        pm_s, px_s = str(pm_i), str(px_i)
+
     return CatalogParams(
         page=page,
         tab=tab,
@@ -112,6 +136,10 @@ def parse_listing_catalog_get(GET) -> CatalogParams:
         q=q,
         property_category=prop,
         land_plot_legacy=land_legacy,
+        price_min=pm_s,
+        price_max=px_s,
+        price_min_usd=pm_i,
+        price_max_usd=px_i,
     )
 
 
@@ -132,4 +160,8 @@ def catalog_params_to_querydict(p: CatalogParams) -> QueryDict:
         qd['property_category'] = p.property_category
     elif p.land_plot_legacy:
         qd['land_plot'] = '1'
+    if p.price_min:
+        qd['price_min'] = p.price_min
+    if p.price_max:
+        qd['price_max'] = p.price_max
     return qd

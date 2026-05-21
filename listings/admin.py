@@ -27,6 +27,7 @@ class ListingAdmin(admin.ModelAdmin):
         'property_category',
         'is_land_plot',
         'price',
+        'price_usd',
         'rooms',
         'area',
         'realtor_name',

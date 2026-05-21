@@ -19,6 +19,7 @@ class ListingSerializer(serializers.ModelSerializer):
             'property_category',
             'is_land_plot',
             'price',
+            'price_usd',
             'rooms',
             'area',
             'description',

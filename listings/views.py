@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.db.models import Max, Q
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
@@ -17,6 +18,31 @@ LISTINGS_PER_PAGE = 24
 
 # Значение GET property_category для фильтра «Земельный участок» (не поле модели).
 FILTER_CATEGORY_LAND = 'land'
+
+
+def _catalog_slider_step_for_max(max_usd: int) -> int:
+    if max_usd <= 200_000:
+        return 500
+    if max_usd <= 2_000_000:
+        return 2_500
+    return 10_000
+
+
+def _catalog_price_slider_max_usd(queryset_before_price) -> int:
+    """Верхняя граница слайдера по данным выборки до фильтра цены (округление вверх)."""
+    from .catalog_params import MAX_PRICE_USD
+
+    m = (
+        queryset_before_price.filter(price_usd__isnull=False)
+        .aggregate(peak=Max('price_usd'))
+        .get('peak')
+    )
+    if not m:
+        return 500_000
+    step_band = 50_000
+    rounded = int(((m + step_band - 1) // step_band) * step_band)
+    rounded = max(rounded, 5000)
+    return min(rounded, MAX_PRICE_USD)
 
 
 def _pagination_pages(current, total, margin=2):
@@ -60,7 +86,6 @@ def listing_list(request):
     if p.area_max_int is not None:
         queryset = queryset.filter(area__lte=p.area_max_int)
     if p.q:
-        from django.db.models import Q
         queryset = queryset.filter(
             Q(title__icontains=p.q) | Q(address__icontains=p.q) | Q(description__icontains=p.q)
         )
@@ -68,6 +93,16 @@ def listing_list(request):
         queryset = queryset.filter(is_land_plot=True)
     elif p.property_category in {Listing.PROPERTY_COMMERCIAL, Listing.PROPERTY_RESIDENTIAL}:
         queryset = queryset.filter(property_category=p.property_category, is_land_plot=False)
+
+    slider_max_usd = _catalog_price_slider_max_usd(queryset)
+    slider_step = _catalog_slider_step_for_max(slider_max_usd)
+
+    if p.price_min_usd is not None or p.price_max_usd is not None:
+        queryset = queryset.filter(price_usd__isnull=False)
+    if p.price_min_usd is not None:
+        queryset = queryset.filter(price_usd__gte=p.price_min_usd)
+    if p.price_max_usd is not None:
+        queryset = queryset.filter(price_usd__lte=p.price_max_usd)
 
     paginator = Paginator(queryset, LISTINGS_PER_PAGE)
     page_obj = paginator.get_page(p.page)
@@ -87,7 +122,14 @@ def listing_list(request):
     query_purchase = get_purchase.urlencode()
 
     has_filters = bool(
-        p.tab or p.rooms or p.area_min or p.area_max or p.q or p.property_category
+        p.tab
+        or p.rooms
+        or p.area_min
+        or p.area_max
+        or p.q
+        or p.property_category
+        or p.price_min_usd is not None
+        or p.price_max_usd is not None
     )
     context = {
         'listings': page_obj,
@@ -98,7 +140,10 @@ def listing_list(request):
         'filter_area_min': p.area_min,
         'filter_area_max': p.area_max,
         'filter_q': p.q,
-        'filter_property_category': p.property_category,
+        'filter_price_min': p.price_min,
+        'filter_price_max': p.price_max,
+        'price_slider_max': slider_max_usd,
+        'price_slider_step': slider_step,
         'base_query': base_query,
         'query_all': query_all,
         'query_sale': query_sale,

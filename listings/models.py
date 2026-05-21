@@ -36,6 +36,12 @@ class Listing(models.Model):
     )
     is_land_plot = models.BooleanField('Земельный участок', default=False)
     price = models.CharField('Цена', max_length=100, default='По запросу')  # "По запросу" или сумма
+    price_usd = models.PositiveIntegerField(
+        'Цена, USD',
+        null=True,
+        blank=True,
+        help_text='Число в долларах для фильтра в каталоге. Строковое поле «Цена» — подпись на сайте.',
+    )
     rooms = models.PositiveSmallIntegerField('Комнат', default=1)
     area = models.PositiveIntegerField('Площадь, м²', default=0)
     description = models.TextField('Описание', blank=True)
