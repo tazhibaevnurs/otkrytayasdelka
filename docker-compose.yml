@@ -1,6 +1,7 @@
 # Docker Compose для деплоя «Открытая Сделка»
 # Запуск: docker compose up -d
 # Сборка: docker compose build
+# БД и медиа вне образа — см. deploy/README.md (SQLite в ./data, Postgres при DATABASE_URL).
 #
 # Секреты: только через .env / secrets (не коммитьте .env). Отдельный DATABASE_URL для preview/staging.
 # PostgreSQL: не пробрасывайте порт БД в интернет; сервис db без ports: или только internal network.

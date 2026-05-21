@@ -32,3 +32,5 @@ python manage.py runserver
 Откройте в браузере: **http://127.0.0.1:8000/**
 
 Админка: **http://127.0.0.1:8000/admin/** (создайте суперпользователя: `python manage.py createsuperuser`).
+
+Деплой в Docker и бэкапы перед выкладкой: **[deploy/README.md](deploy/README.md)**.
