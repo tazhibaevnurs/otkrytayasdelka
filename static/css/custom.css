@@ -113,6 +113,7 @@ html[data-theme="light"] footer svg.group-hover\:text-sky-300 {
 [data-catalog-select] {
   position: relative;
   z-index: 1;
+  isolation: isolate;
   /* flex-элемент без min-width:0 на iOS даёт «разъезжание» и ломает absolute у панели */
   min-width: 0;
 }
@@ -141,6 +142,23 @@ html[data-theme="light"] footer svg.group-hover\:text-sky-300 {
   appearance: none !important;
   font-size: 0 !important;
   line-height: 0 !important;
+}
+/* Обёртка: WebKit не рисует нативный select поверх кастомной кнопки */
+.catalog-select-native-wrap {
+  position: absolute !important;
+  left: -9999px !important;
+  top: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  border: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  white-space: nowrap !important;
 }
 .catalog-select-trigger {
   box-sizing: border-box;
@@ -230,6 +248,10 @@ html[data-theme="light"] footer svg.group-hover\:text-sky-300 {
   visibility: visible;
   transform: translateY(0) scale(1);
   pointer-events: auto;
+}
+/* HTML hidden — надёжное скрытие в iOS; при открытии снимается через JS */
+.catalog-select-panel[hidden] {
+  display: none !important;
 }
 .catalog-select-option {
   margin: 0;
