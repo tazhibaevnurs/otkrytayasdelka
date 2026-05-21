@@ -70,6 +70,14 @@ class Listing(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        # Числовая цена для фильтра: подставляем из текста «Цены», если не задана вручную
+        if self.price_usd is None:
+            from .price_infer import infer_price_usd_from_charfield
+
+            inferred = infer_price_usd_from_charfield(self.price)
+            if inferred is not None:
+                self.price_usd = inferred
+
         update_fields = kwargs.get('update_fields')
         old_image_name = None
         if self.pk:
