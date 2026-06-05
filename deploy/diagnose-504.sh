@@ -43,7 +43,7 @@ else
 fi
 
 hr "Проверка медиа через nginx (не должно идти в Django)"
-SAMPLE="$(find \"$MEDIA_DIR\" -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \\) 2>/dev/null | head -1)"
+SAMPLE="$(find "$MEDIA_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | head -1)"
 if [ -n "$SAMPLE" ] && [ -f "$SAMPLE" ]; then
   REL="${SAMPLE#$MEDIA_DIR/}"
   run "curl -sS -o /dev/null -w '/media/${REL} -> HTTP %{http_code} за %{time_total}s (размер заголовка)\n' --connect-timeout 5 --max-time 15 -I \"https://otkrytayasdelka.kg/media/${REL}\""
