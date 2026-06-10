@@ -5,9 +5,9 @@ import os
 from django.core.exceptions import ValidationError
 from PIL import Image
 
-MAX_GALLERY_IMAGE_BYTES = 5 * 1024 * 1024  # 5 МБ
+MAX_GALLERY_IMAGE_BYTES = 10 * 1024 * 1024  # 10 МБ на файл
 MAX_GALLERY_FILES_PER_REQUEST = 30
-ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif'}
 
 
 def validate_gallery_image_file(uploaded) -> None:

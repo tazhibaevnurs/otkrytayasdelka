@@ -211,10 +211,10 @@ MEDIA_ROOT = os.environ.get('DJANGO_MEDIA_ROOT', str(BASE_DIR / 'media'))
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Лимит размера тела запроса (не-файловые поля форм / JSON API).
-DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024  # 1 МБ
-# Файлы больше порога пишутся во временный файл; суммарно загрузки — до 10 МБ на файл в памяти до spill.
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 МБ
+# Лимиты загрузки (админка: фото объектов, секции, команда).
+# 413 Request Entity Too Large обычно от nginx client_max_body_size — см. deploy/fix-413-nginx.sh
+DATA_UPLOAD_MAX_MEMORY_SIZE = 32 * 1024 * 1024  # 32 МБ (поля формы до spill на диск)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024  # 12 МБ на файл в памяти, дальше — temp file
 
 # AI (заглушка /api/ai/generate/): дневной лимит; pro — группа Django с именем ниже.
 AI_RATE_LIMIT_FREE_DAILY = int(os.environ.get('AI_RATE_LIMIT_FREE_DAILY', '5'))
