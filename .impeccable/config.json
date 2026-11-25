@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "listings/templates/listings/detail.html"
+        ],
+        "createdAt": "2026-11-25T13:32:12.912Z",
+        "reason": "agent: pre-existing gallery modal img#modal-image, src is assigned by JS on open (detail.html script setIndex/openModal)"
+      }
+    ]
+  }
+}
