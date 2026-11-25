@@ -158,7 +158,9 @@ class AddListingFlowTests(BotFlowTestCase):
     def test_full_add_flow_publishes_listing(self):
         self.fill_draft_to_preview()
         self.assertEqual(self.session().state, 'preview')
-        self.assertIn('Предварительный просмотр', '\n'.join(self.client_tg.texts()))
+        kind, last_text, keyboard = self.client_tg.sent[-1]
+        self.assertIn('Предварительный просмотр', last_text)
+        self.assertIn("'d:pub'", str(keyboard))
 
         self.press('d:pub')
 
@@ -223,6 +225,17 @@ class AddListingFlowTests(BotFlowTestCase):
         self.assertEqual(session.draft['price_usd'], 95000)
         self.assertEqual(session.draft['title'], '2-комнатная квартира ПСО')
 
+    def test_legacy_menu_labels_without_emoji_still_work(self):
+        self.send('Добавить объект')
+        self.assertEqual(self.session().state, 'add_cover')
+        self.send('Мои загруженные объекты')
+        self.assertIn('У вас пока нет', self.client_tg.last_text())
+
+    def test_text_in_preview_resends_action_buttons(self):
+        self.fill_draft_to_preview()
+        self.send('где кнопка?')
+        self.assertIn("'d:pub'", str(self.client_tg.sent[-1][2]))
+
     def test_unfinished_draft_is_resumed(self):
         self.send(MENU_ADD)
         self.send(photo='cover')
@@ -262,7 +275,7 @@ class EditListingFlowTests(BotFlowTestCase):
         uuid_before, published_before = listing.public_uuid, listing.published_at
 
         self.press(f'lf:{listing.pk}:price')
-        self.assertIn('Текущая цена объекта — 91 000 $', self.client_tg.last_text())
+        self.assertIn('Текущая цена объекта — <b>91 000 $</b>', self.client_tg.last_text())
         self.send('87 000')
         self.assertIn('Вы хотите изменить стоимость с 91 000 $ на 87 000 $?', self.client_tg.last_text())
         self.press('cf:yes')

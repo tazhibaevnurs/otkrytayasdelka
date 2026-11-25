@@ -23,10 +23,19 @@ from .telegram_api import TelegramAPIError
 
 logger = logging.getLogger('tgbot')
 
-MENU_ADD = 'Добавить объект'
-MENU_MY = 'Мои загруженные объекты'
-MENU_EDIT = 'Редактировать объект'
-MENU_DELETE = 'Удалить объект'
+MENU_ADD = '➕ Добавить объект'
+MENU_MY = '📋 Мои загруженные объекты'
+MENU_EDIT = '✏️ Редактировать объект'
+MENU_DELETE = '🗑 Удалить объект'
+
+# У сотрудников может остаться старая клавиатура без эмодзи — принимаем оба варианта.
+MENU_ACTIONS = {
+    alias: label
+    for label in (MENU_ADD, MENU_MY, MENU_EDIT, MENU_DELETE)
+    for alias in (label, label.split(' ', 1)[1])
+}
+
+DIVIDER = '━━━━━━━━━━━━━━'
 
 MAIN_KEYBOARD = {
     'keyboard': [
@@ -67,62 +76,65 @@ ADD_STATES = {name for name, _ in ADD_STEPS} | {STATE_PHOTOS_ORDER}
 CHAINED_STEPS = {'add_district': 'add_street', 'add_realtor_name': 'add_realtor_phone'}
 
 STEP_TITLES = {
-    'add_cover': 'Шаг 1 из 8. Обложка',
-    'add_photos': 'Шаг 2 из 8. Фотографии',
-    'add_title': 'Шаг 3 из 8. Заголовок объекта',
-    'add_district': 'Шаг 4 из 8. Расположение',
-    'add_street': 'Шаг 4 из 8. Расположение',
-    'add_rooms': 'Шаг 5 из 8. Основные характеристики',
-    'add_area': 'Шаг 5 из 8. Основные характеристики',
-    'add_kind': 'Шаг 5 из 8. Основные характеристики',
-    'add_price': 'Шаг 6 из 8. Стоимость',
-    'add_realtor_name': 'Шаг 7 из 8. Контакт риэлтора',
-    'add_realtor_phone': 'Шаг 7 из 8. Контакт риэлтора',
-    'add_description': 'Шаг 8 из 8. Описание объекта',
+    'add_cover': '📸 Шаг 1 из 8 · Обложка',
+    'add_photos': '🖼 Шаг 2 из 8 · Фотографии',
+    'add_title': '🏷 Шаг 3 из 8 · Заголовок объекта',
+    'add_district': '📍 Шаг 4 из 8 · Расположение',
+    'add_street': '📍 Шаг 4 из 8 · Расположение',
+    'add_rooms': '🏠 Шаг 5 из 8 · Характеристики',
+    'add_area': '🏠 Шаг 5 из 8 · Характеристики',
+    'add_kind': '🏠 Шаг 5 из 8 · Характеристики',
+    'add_price': '💵 Шаг 6 из 8 · Стоимость',
+    'add_realtor_name': '👤 Шаг 7 из 8 · Контакт риэлтора',
+    'add_realtor_phone': '👤 Шаг 7 из 8 · Контакт риэлтора',
+    'add_description': '📝 Шаг 8 из 8 · Описание объекта',
 }
 
 STEP_TEXTS = {
-    'add_cover': 'Отправьте фасад объекта — одно фото.\nЭто фото будет отображаться первым в карточке объекта на сайте.',
-    'add_photos': (
-        'Отправьте остальные фотографии объекта. Можно отправить несколько фотографий подряд. '
-        'Когда закончите, нажмите кнопку «Далее».'
+    'add_cover': (
+        'Отправьте <b>одно фото фасада</b> объекта.\n'
+        'Оно будет первым в карточке на сайте.'
     ),
-    'add_title': 'Введите название объекта.\nПример: 2-комнатная квартира ПСО',
-    'add_district': 'Укажите микрорайон или район.\nПример: мкр. Асанбай',
-    'add_street': 'Укажите адрес (улица, дом), если необходимо. Если не нужно — нажмите «Пропустить».',
+    'add_photos': (
+        'Отправьте остальные фотографии — можно сразу несколько.\n'
+        'Когда закончите, нажмите <b>«Далее»</b>.'
+    ),
+    'add_title': 'Введите название объекта.\n<i>Пример: 2-комнатная квартира ПСО</i>',
+    'add_district': 'Укажите микрорайон или район.\n<i>Пример: мкр. Асанбай</i>',
+    'add_street': 'Укажите улицу и дом.\nЕсли адрес не нужен — нажмите <b>«Пропустить»</b>.',
     'add_rooms': 'Количество комнат:',
-    'add_area': 'Площадь квартиры (м²):\nПример: 67',
+    'add_area': 'Площадь объекта, м²:\n<i>Пример: 67</i>',
     'add_kind': 'Тип объекта:',
-    'add_price': 'Укажите стоимость объекта в долларах.\nПример: 91 000',
-    'add_realtor_name': 'Имя риэлтора:\nПример: Наргиза',
-    'add_realtor_phone': 'Номер телефона риэлтора:\nПример: 0509 349 199',
+    'add_price': 'Стоимость в долларах США.\n<i>Пример: 91 000</i>',
+    'add_realtor_name': 'Имя риэлтора:\n<i>Пример: Наргиза</i>',
+    'add_realtor_phone': 'Номер телефона риэлтора:\n<i>Пример: 0509 349 199</i>',
     'add_description': (
-        'Отправьте полное описание объекта одним сообщением.\n'
+        'Отправьте полное описание объекта <b>одним сообщением</b>.\n'
         'Абзацы и переносы строк сохранятся на сайте.'
     ),
 }
 
 DRAFT_EDIT_FIELDS = [
-    ('cover', 'Обложка', 'add_cover'),
-    ('photos', 'Фотографии', 'add_photos'),
-    ('title', 'Название', 'add_title'),
-    ('district', 'Район и адрес', 'add_district'),
-    ('rooms', 'Комнаты', 'add_rooms'),
-    ('area', 'Площадь', 'add_area'),
-    ('kind', 'Тип', 'add_kind'),
-    ('price', 'Стоимость', 'add_price'),
-    ('realtor', 'Контакт риэлтора', 'add_realtor_name'),
-    ('description', 'Описание', 'add_description'),
+    ('cover', '📸 Обложка', 'add_cover'),
+    ('photos', '🖼 Фотографии', 'add_photos'),
+    ('title', '🏷 Название', 'add_title'),
+    ('district', '📍 Район и адрес', 'add_district'),
+    ('rooms', '🚪 Комнаты', 'add_rooms'),
+    ('area', '📐 Площадь', 'add_area'),
+    ('kind', '🏢 Тип', 'add_kind'),
+    ('price', '💵 Стоимость', 'add_price'),
+    ('realtor', '👤 Риэлтор', 'add_realtor_name'),
+    ('description', '📝 Описание', 'add_description'),
 ]
 DRAFT_EDIT_STATE = {key: state for key, _, state in DRAFT_EDIT_FIELDS}
 
 LISTING_EDIT_FIELDS = [
-    ('price', 'Изменить цену'),
-    ('description', 'Изменить описание'),
-    ('cover', 'Изменить обложку'),
-    ('realtor', 'Изменить контакт риэлтора'),
-    ('area', 'Изменить площадь'),
-    ('title', 'Изменить заголовок'),
+    ('price', '💵 Изменить цену'),
+    ('description', '📝 Изменить описание'),
+    ('cover', '📸 Изменить обложку'),
+    ('realtor', '👤 Изменить контакт риэлтора'),
+    ('area', '📐 Изменить площадь'),
+    ('title', '🏷 Изменить заголовок'),
 ]
 LISTING_EDIT_KEYS = {key for key, _ in LISTING_EDIT_FIELDS}
 
@@ -190,7 +202,7 @@ class Bot:
         if employee is None:
             self._send(
                 chat['id'],
-                'Доступ к боту есть только у сотрудников агентства «Открытая Сделка».\n'
+                '🔒 Доступ к боту есть только у сотрудников агентства «Открытая Сделка».\n\n'
                 f'Передайте администратору ваш Telegram ID: <code>{user["id"]}</code>',
             )
             return
@@ -204,7 +216,7 @@ class Bot:
                 self._on_message(session, message)
         except Exception:
             logger.exception('tgbot: ошибка обработки update %s', update.get('update_id'))
-            self._send(session.chat_id, 'Произошла ошибка. Попробуйте ещё раз или нажмите /start.')
+            self._send(session.chat_id, '⚠️ Произошла ошибка. Попробуйте ещё раз или нажмите /start.')
             return
         session.save()
 
@@ -264,12 +276,13 @@ class Bot:
             return self._cmd_start(session)
         if text == '/cancel':
             return self._cmd_cancel(session)
-        if text == MENU_ADD:
+        menu = MENU_ACTIONS.get(text)
+        if menu == MENU_ADD:
             return self._menu_add(session)
-        if text in (MENU_MY, MENU_EDIT, MENU_DELETE):
+        if menu:
             if session.state in EDIT_STATES:
                 self._reset_state(session)
-            mode = {MENU_MY: 'l', MENU_EDIT: 'e', MENU_DELETE: 'x'}[text]
+            mode = {MENU_MY: 'l', MENU_EDIT: 'e', MENU_DELETE: 'x'}[menu]
             return self._show_listing_list(session, mode, 0)
 
         photo = extract_photo(message)
@@ -286,29 +299,40 @@ class Bot:
             return None
         if state in ADD_STATES:
             if photo:
-                return self._send(session.chat_id, 'Сейчас нужно ввести текст, а не фото.')
+                return self._send(session.chat_id, '✍️ Сейчас нужно ввести текст, а не фото.')
             if not text:
-                return self._send(session.chat_id, 'Пожалуйста, отправьте ответ текстом.')
+                return self._send(session.chat_id, '✍️ Пожалуйста, отправьте ответ текстом.')
             return self._on_step_text(session, state, text, message.get('text') or '')
         if state == STATE_PREVIEW:
-            return self._send(session.chat_id, 'Проверьте карточку и воспользуйтесь кнопками под ней.')
+            return self._send(
+                session.chat_id,
+                '👇 Проверьте карточку и выберите действие.',
+                self._preview_keyboard(),
+            )
         if state == STATE_EDIT_CONFIRM:
-            return self._send(session.chat_id, 'Подтвердите или отмените изменение кнопками выше.')
-        return self._send_main_menu(session, 'Выберите действие в меню ниже.')
+            return self._send(session.chat_id, '👆 Подтвердите или отмените изменение кнопками выше.')
+        return self._send_main_menu(session, 'Выберите действие в меню ниже 👇')
 
     def _cmd_start(self, session):
         if session.state in EDIT_STATES:
             self._reset_state(session)
-        text = f'Здравствуйте, {esc(session.employee.full_name)}!\nВыберите действие:'
+        text = (
+            f'👋 Здравствуйте, <b>{esc(session.employee.full_name)}</b>!\n'
+            'Это бот агентства <b>«Открытая Сделка»</b> для публикации объектов на сайте.\n\n'
+            '➕ <b>Добавить объект</b> — новая карточка\n'
+            '📋 <b>Мои объекты</b> — список опубликованных\n'
+            '✏️ <b>Редактировать</b> — цена, описание, фото и др.\n'
+            '🗑 <b>Удалить</b> — снять объект с сайта'
+        )
         if session.draft:
-            text += '\n\nУ вас есть незавершённая карточка — нажмите «Добавить объект», чтобы продолжить.'
+            text += '\n\n📝 У вас есть незавершённая карточка — нажмите «Добавить объект», чтобы продолжить.'
         self._send_main_menu(session, text)
 
     def _cmd_cancel(self, session):
         had_draft = bool(session.draft) and (session.state in ADD_STATES or session.state == STATE_PREVIEW)
         self._reset_state(session)
         if had_draft:
-            self._send_main_menu(session, 'Действие прервано. Черновик карточки сохранён.')
+            self._send_main_menu(session, '⏸ Действие прервано. Черновик карточки сохранён.')
         else:
             self._send_main_menu(session, 'Действие отменено.')
 
@@ -325,8 +349,8 @@ class Bot:
             title = session.draft.get('title') or 'без названия'
             return self._send(
                 session.chat_id,
-                f'У вас есть незавершённая карточка «{esc(title)}». Продолжить её или начать заново?',
-                inline([[('Продолжить', 'dr:cont'), ('Начать заново', 'dr:new')]]),
+                f'📝 У вас есть незавершённая карточка «{esc(title)}».\nПродолжить её или начать заново?',
+                inline([[('▶️ Продолжить', 'dr:cont'), ('🔄 Начать заново', 'dr:new')]]),
             )
         return self._start_new_draft(session)
 
@@ -336,8 +360,9 @@ class Bot:
         session.state = 'add_cover'
         self._send(
             session.chat_id,
-            'Начинаем добавление объекта. Бот последовательно запросит данные.\n'
-            'В любой момент можно ввести /cancel — черновик сохранится.',
+            '🏡 <b>Новый объект</b>\n'
+            'Заполним карточку за 8 шагов — бот будет подсказывать на каждом.\n\n'
+            '<i>В любой момент можно ввести /cancel — черновик сохранится.</i>',
         )
         self._prompt(session)
 
@@ -383,7 +408,7 @@ class Bot:
         value = values.get(session.state)
         if value in (None, ''):
             return ''
-        return f'\nСейчас: <b>{esc(value)}</b>'
+        return f'\n\nСейчас: <b>{esc(value)}</b>'
 
     def _prompt(self, session):
         state = session.state
@@ -391,13 +416,13 @@ class Bot:
         rows = []
         if state == 'add_photos':
             count = len(d.get('photos') or [])
-            rows.append([('Далее', 'ph:next')])
+            rows.append([('Далее →', 'ph:next')])
             if count >= 2:
-                rows.append([('Изменить порядок фото', 'ph:order')])
+                rows.append([('🔀 Изменить порядок фото', 'ph:order')])
             if count:
-                rows.append([('Удалить загруженные фото', 'ph:reset')])
+                rows.append([('🗑 Удалить загруженные фото', 'ph:reset')])
         elif state == 'add_street':
-            rows.append([('Пропустить', 'skip')])
+            rows.append([('Пропустить →', 'skip')])
         elif state == 'add_rooms':
             rows.append([(str(n), f'val:{n}') for n in range(1, 6)])
         elif state == 'add_kind':
@@ -406,26 +431,26 @@ class Bot:
         elif state == 'add_realtor_name':
             emp = session.employee
             if emp.default_realtor_name and emp.default_realtor_phone:
-                rows.append([(f'{emp.default_realtor_name}, {emp.default_realtor_phone}', 'rc:def')])
+                rows.append([(f'👤 {emp.default_realtor_name}, {emp.default_realtor_phone}', 'rc:def')])
         if session.context.get('return_preview'):
-            rows.append([('Назад к просмотру', 'd:preview')])
+            rows.append([('← Назад к просмотру', 'd:preview')])
 
-        text = f'<b>{STEP_TITLES[state]}</b>\n{STEP_TEXTS[state]}'
+        text = f'<b>{STEP_TITLES[state]}</b>\n\n{STEP_TEXTS[state]}'
         if state == 'add_photos' and d.get('photos'):
-            text += f'\nУже загружено: {len(d["photos"])}'
+            text += f'\n\nУже загружено: <b>{len(d["photos"])}</b>'
         text += self._current_value_hint(session)
         self._send(session.chat_id, text, inline(rows) if rows else None)
 
     def _on_cover(self, session, photo, group_id):
         if not photo:
-            return self._send(session.chat_id, 'Отправьте, пожалуйста, одно фото фасада объекта.')
+            return self._send(session.chat_id, '📸 Отправьте, пожалуйста, одно фото фасада объекта.')
         if group_id and group_id == session.context.get('last_group'):
             # Остальные фото из того же альбома считаем галереей.
             session.draft.setdefault('photos', []).append(photo)
             return None
         session.draft['cover'] = photo
         session.context['last_group'] = group_id
-        self._send(session.chat_id, 'Обложка сохранена.')
+        self._send(session.chat_id, '✅ Обложка сохранена.')
         if session.context.get('return_preview'):
             session.context = {'last_group': group_id}
             session.state = STATE_PREVIEW
@@ -435,19 +460,21 @@ class Bot:
 
     def _on_gallery_photo(self, session, photo, group_id):
         if not photo:
-            return self._send(session.chat_id, 'Отправьте фото или нажмите «Далее».', inline([[('Далее', 'ph:next')]]))
+            return self._send(
+                session.chat_id, '🖼 Отправьте фото или нажмите «Далее».', inline([[('Далее →', 'ph:next')]])
+            )
         photos = session.draft.setdefault('photos', [])
         if len(photos) >= f.MAX_PHOTOS:
-            return self._send(session.chat_id, f'Можно загрузить не больше {f.MAX_PHOTOS} фото. Нажмите «Далее».')
+            return self._send(session.chat_id, f'⚠️ Можно загрузить не больше {f.MAX_PHOTOS} фото. Нажмите «Далее».')
         photos.append(photo)
         if group_id:
             if group_id == session.context.get('last_group'):
                 return None
             session.context['last_group'] = group_id
-            text = 'Получаю фото… Когда все загрузятся, нажмите «Далее».'
+            text = '⏳ Получаю фото… Когда все загрузятся, нажмите «Далее».'
         else:
-            text = f'Фото добавлено. Всего: {len(photos)}. Отправьте ещё или нажмите «Далее».'
-        self._send(session.chat_id, text, inline([[('Далее', 'ph:next')]]))
+            text = f'✅ Фото добавлено. Всего: <b>{len(photos)}</b>.\nОтправьте ещё или нажмите «Далее».'
+        self._send(session.chat_id, text, inline([[('Далее →', 'ph:next')]]))
 
     def _on_step_text(self, session, state, text, raw_text):
         d = session.draft
@@ -457,7 +484,7 @@ class Bot:
                 order = f.parse_photo_order(text, len(photos))
                 d['photos'] = [photos[i] for i in order]
                 session.state = 'add_photos'
-                self._send(session.chat_id, 'Порядок фото сохранён.')
+                self._send(session.chat_id, '✅ Порядок фото сохранён.')
                 return self._prompt(session)
             if state == 'add_title':
                 d['title'] = f.clean_line(text, f.MAX_TITLE_LEN, 'Название')
@@ -472,7 +499,7 @@ class Bot:
             elif state == 'add_area':
                 d['area'] = f.parse_area(text)
             elif state == 'add_kind':
-                return self._send(session.chat_id, 'Выберите тип объекта кнопкой ниже.')
+                return self._send(session.chat_id, '👇 Выберите тип объекта кнопкой ниже.')
             elif state == 'add_price':
                 d['price_usd'] = f.parse_price_usd(text)
             elif state == 'add_realtor_name':
@@ -482,7 +509,7 @@ class Bot:
             elif state == 'add_description':
                 d['description'] = f.clean_description(raw_text)
         except f.FieldError as e:
-            return self._send(session.chat_id, esc(e))
+            return self._send(session.chat_id, f'⚠️ {esc(e)}')
         self._advance(session, state)
 
     # ---------- предпросмотр ----------
@@ -493,47 +520,48 @@ class Bot:
             return fmt(v) if v not in (None, '') else '<i>не заполнено</i>'
 
         photos = draft.get('photos') or []
+        address = esc(f.compose_address(draft.get('district', ''), draft.get('street', ''))) or val('district')
         lines = [
-            '<b>Предварительный просмотр карточки</b>',
+            '👀 <b>Предварительный просмотр карточки</b>',
+            DIVIDER,
+            f'🏷 <b>{val("title")}</b>',
+            f'📍 {address}',
             '',
-            f'<b>Название:</b> {val("title")}',
-            f'<b>Район:</b> {val("district")}',
-        ]
-        if draft.get('street'):
-            lines.append(f'<b>Адрес:</b> {esc(draft["street"])}')
-        lines += [
-            f'<b>Комнат:</b> {val("rooms")}',
-            f'<b>Площадь:</b> {val("area", lambda v: f"{v} м²")}',
-            f'<b>Тип:</b> {val("kind", lambda v: esc(f.KIND_CHOICES.get(v, v)))}',
-            f'<b>Стоимость:</b> {val("price_usd", price_line)}',
-            f'<b>Риэлтор:</b> {val("realtor_name")}, {val("realtor_phone")}',
-            f'<b>Фото:</b> обложка — {"есть" if draft.get("cover") else "нет"}, остальных — {len(photos)}',
+            f'🚪 Комнат: <b>{val("rooms")}</b>',
+            f'📐 Площадь: <b>{val("area", lambda v: f"{v} м²")}</b>',
+            f'🏢 Тип: <b>{val("kind", lambda v: esc(f.KIND_CHOICES.get(v, v)))}</b>',
+            f'💵 Стоимость: <b>{val("price_usd", price_line)}</b>',
+            '',
+            f'👤 Риэлтор: {val("realtor_name")}, {val("realtor_phone")}',
+            f'📸 Фото: обложка {"✅" if draft.get("cover") else "❌"} · ещё {len(photos)} шт.',
+            DIVIDER,
         ]
         missing = missing_draft_fields(draft)
         if missing:
-            lines += ['', '<b>Не заполнено:</b> ' + esc(', '.join(missing))]
+            lines += ['⚠️ <b>Не заполнено:</b> ' + esc(', '.join(missing)), '']
+        lines.append('Всё верно? Нажмите <b>«Опубликовать»</b> 👇')
         return '\n'.join(lines)
 
     def _preview_keyboard(self):
         return inline([
-            [('Опубликовать', 'd:pub')],
-            [('Редактировать', 'd:edit')],
-            [('Отменить загрузку', 'd:cancel')],
+            [('✅ Опубликовать', 'd:pub')],
+            [('✏️ Редактировать', 'd:edit')],
+            [('✖️ Отменить загрузку', 'd:cancel')],
         ])
 
     def _show_preview(self, session):
         d = session.draft
         chat_id = session.chat_id
         if d.get('cover'):
-            self._send_one_photo(chat_id, d['cover'], 'Обложка')
+            self._send_one_photo(chat_id, d['cover'], '📸 Обложка')
         if d.get('photos'):
             self._send_photos(chat_id, d['photos'])
-        self._send(chat_id, self._draft_summary(d))
         description = d.get('description') or ''
         chunks = [esc(c) for c in f.split_text(description, 3500)] if description else ['<i>не заполнено</i>']
         for i, chunk in enumerate(chunks):
-            text = ('<b>Описание:</b>\n' if i == 0 else '') + chunk
-            self._send(chat_id, text, self._preview_keyboard() if i == len(chunks) - 1 else None)
+            self._send(chat_id, ('📝 <b>Описание</b>\n\n' if i == 0 else '') + chunk)
+        # Кнопки — на последнем сообщении, чтобы они не потерялись, даже если не дошло описание.
+        self._send(chat_id, self._draft_summary(d), self._preview_keyboard())
 
     def _publish(self, session):
         if session.state != STATE_PREVIEW or not session.draft:
@@ -542,18 +570,18 @@ class Bot:
         if missing:
             return self._send(
                 session.chat_id,
-                'Нельзя опубликовать: не заполнены поля — ' + esc(', '.join(missing)) + '.',
-                inline([[('Редактировать', 'd:edit')]]),
+                '⚠️ Нельзя опубликовать: не заполнены поля — ' + esc(', '.join(missing)) + '.',
+                inline([[('✏️ Редактировать', 'd:edit')]]),
             )
-        self._send(session.chat_id, 'Публикую объект на сайте…')
+        self._send(session.chat_id, '⏳ Публикую объект на сайте…')
         try:
             listing = publish_draft(self.client, session.employee, session.draft)
         except PublishError as e:
             return self._send(
                 session.chat_id,
-                f'Ошибка загрузки на сайт: {esc(e)}\n\n'
+                f'❌ Ошибка загрузки на сайт: {esc(e)}\n\n'
                 'Введённые данные сохранены — можно повторить отправку без заполнения карточки заново.',
-                inline([[('Повторить отправку', 'd:pub')], [('Редактировать', 'd:edit')]]),
+                inline([[('🔁 Повторить отправку', 'd:pub')], [('✏️ Редактировать', 'd:edit')]]),
             )
         emp = session.employee
         emp.default_realtor_name = listing.realtor_name
@@ -564,17 +592,17 @@ class Bot:
         url = listing_url(listing)
         self._send(
             session.chat_id,
-            f'Объект успешно опубликован!\n{esc(url)}',
-            inline([[('Открыть на сайте', f'url:{url}')]]),
+            f'🎉 <b>Объект успешно опубликован!</b>\n\n🏷 {esc(listing.title)}\n🔗 {esc(url)}',
+            inline([[('🌐 Открыть на сайте', f'url:{url}')]]),
         )
-        self._send_main_menu(session, 'Что делаем дальше?')
+        self._send_main_menu(session, 'Что делаем дальше? 👇')
 
     # ---------- callback-кнопки ----------
 
     def _on_callback(self, session: BotSession, data: str):
         action, _, arg = data.partition(':')
         state = session.state
-        stale = 'Эта кнопка уже неактуальна. Нажмите /start, чтобы открыть меню.'
+        stale = '⌛ Эта кнопка уже неактуальна. Нажмите /start, чтобы открыть меню.'
 
         if action == 'dr':
             if arg == 'new' or not session.draft:
@@ -629,7 +657,7 @@ class Bot:
         if action == 'ldy':
             return self._do_delete(session, arg)
         if action == 'ldn':
-            return self._send(session.chat_id, 'Удаление отменено.')
+            return self._send(session.chat_id, '↩️ Удаление отменено.')
 
         return self._send(session.chat_id, stale)
 
@@ -638,22 +666,22 @@ class Bot:
         if arg == 'next':
             session.draft['photos_done'] = True
             session.context.pop('last_group', None)
-            self._send(session.chat_id, f'Загружено дополнительных фото: {len(photos)}.')
+            self._send(session.chat_id, f'✅ Загружено дополнительных фото: <b>{len(photos)}</b>.')
             return self._advance(session, 'add_photos')
         if arg == 'order':
             if len(photos) < 2:
-                return self._send(session.chat_id, 'Чтобы менять порядок, нужно минимум 2 фото.')
+                return self._send(session.chat_id, '⚠️ Чтобы менять порядок, нужно минимум 2 фото.')
             self._send_photos(session.chat_id, photos, numbered=True)
             session.state = STATE_PHOTOS_ORDER
             return self._send(
                 session.chat_id,
-                'Введите новый порядок номеров через пробел, например: 3 1 2\n'
+                '🔀 Введите новый порядок номеров через пробел.\n<i>Пример: 3 1 2</i>\n\n'
                 'Можно указать только те фото, которые нужно поставить первыми.',
             )
         if arg == 'reset':
             session.draft['photos'] = []
             session.context.pop('last_group', None)
-            self._send(session.chat_id, 'Загруженные фото удалены.')
+            self._send(session.chat_id, '🗑 Загруженные фото удалены.')
             return self._prompt(session)
         return None
 
@@ -661,7 +689,7 @@ class Bot:
         if arg == 'pub':
             return self._publish(session)
         if not session.draft:
-            return self._send(session.chat_id, 'Черновик не найден. Нажмите «Добавить объект».')
+            return self._send(session.chat_id, '🔍 Черновик не найден. Нажмите «Добавить объект».')
         if arg == 'preview':
             session.context = {}
             session.state = STATE_PREVIEW
@@ -671,18 +699,18 @@ class Bot:
             session.state = STATE_PREVIEW
             buttons = [(label, f'df:{key}') for key, label, _ in DRAFT_EDIT_FIELDS]
             rows = [buttons[i:i + 2] for i in range(0, len(buttons), 2)]
-            rows.append([('Назад к просмотру', 'd:preview')])
-            return self._send(session.chat_id, 'Какое поле изменить?', inline(rows))
+            rows.append([('← Назад к просмотру', 'd:preview')])
+            return self._send(session.chat_id, '✏️ Какое поле изменить?', inline(rows))
         if arg == 'cancel':
             return self._send(
                 session.chat_id,
-                'Отменить загрузку? Черновик карточки будет удалён.',
-                inline([[('Да, удалить черновик', 'd:drop'), ('Нет', 'd:preview')]]),
+                '❓ Отменить загрузку? Черновик карточки будет удалён.',
+                inline([[('🗑 Да, удалить черновик', 'd:drop'), ('← Нет', 'd:preview')]]),
             )
         if arg == 'drop':
             session.draft = {}
             self._reset_state(session)
-            return self._send_main_menu(session, 'Загрузка отменена, черновик удалён.')
+            return self._send_main_menu(session, '✖️ Загрузка отменена, черновик удалён.')
         return None
 
     # ---------- мои объекты ----------
@@ -700,7 +728,7 @@ class Bot:
             pk = None
         listing = self._owned_listings(session.employee).filter(pk=pk).first() if pk else None
         if listing is None:
-            self._send(session.chat_id, 'Объект не найден или у вас нет к нему доступа.')
+            self._send(session.chat_id, '🔍 Объект не найден или у вас нет к нему доступа.')
         return listing
 
     def _show_listing_list(self, session, mode, page):
@@ -709,7 +737,9 @@ class Bot:
         qs = self._owned_listings(session.employee)
         total = qs.count()
         if not total:
-            return self._send_main_menu(session, 'У вас пока нет загруженных объектов.')
+            return self._send_main_menu(
+                session, '📭 У вас пока нет загруженных объектов.\nНажмите «➕ Добавить объект», чтобы начать.'
+            )
         pages = (total + LIST_PAGE_SIZE - 1) // LIST_PAGE_SIZE
         page = max(0, min(page, pages - 1))
         items = qs.only('pk', 'title', 'price')[page * LIST_PAGE_SIZE:(page + 1) * LIST_PAGE_SIZE]
@@ -722,24 +752,25 @@ class Bot:
         if nav:
             rows.append(nav)
         title = {
-            'l': 'Ваши объекты',
-            'e': 'Выберите объект для редактирования',
-            'x': 'Выберите объект для удаления',
+            'l': '📋 <b>Ваши объекты</b>',
+            'e': '✏️ <b>Выберите объект для редактирования</b>',
+            'x': '🗑 <b>Выберите объект для удаления</b>',
         }[mode]
-        suffix = f' (стр. {page + 1} из {pages})' if pages > 1 else ''
-        self._send(session.chat_id, f'{title} — всего {total}{suffix}:', inline(rows))
+        suffix = f' · стр. {page + 1} из {pages}' if pages > 1 else ''
+        self._send(session.chat_id, f'{title}\nВсего: {total}{suffix}', inline(rows))
 
     def _listing_caption(self, listing) -> str:
         updated = timezone.localtime(listing.published_at).strftime('%d.%m.%Y %H:%M')
         lines = [
-            f'<b>{esc(listing.title)}</b>',
-            esc(listing.address),
-            f'{listing.rooms} комн. · {listing.area} м² · {esc(listing.object_kind_label)}',
-            price_line(listing.price_usd, listing.price),
+            f'🏷 <b>{esc(listing.title)}</b>',
+            f'📍 {esc(listing.address)}',
+            DIVIDER,
+            f'🚪 {listing.rooms} комн. · 📐 {listing.area} м² · 🏢 {esc(listing.object_kind_label)}',
+            f'💵 <b>{price_line(listing.price_usd, listing.price)}</b>',
         ]
         if realtor_contact(listing):
-            lines.append(f'Риэлтор: {esc(realtor_contact(listing))}')
-        lines += [f'Опубликовано/обновлено: {updated}', esc(listing_url(listing))]
+            lines.append(f'👤 {esc(realtor_contact(listing))}')
+        lines += [DIVIDER, f'🕒 Опубликовано/обновлено: {updated}', f'🔗 {esc(listing_url(listing))}']
         return '\n'.join(lines)
 
     def _open_listing(self, session, mode, pk):
@@ -751,8 +782,8 @@ class Bot:
         if not listing:
             return None
         keyboard = inline([
-            [('Редактировать', f'le:{listing.pk}'), ('Удалить', f'ld:{listing.pk}')],
-            [('Открыть на сайте', f'url:{listing_url(listing)}')],
+            [('✏️ Редактировать', f'le:{listing.pk}'), ('🗑 Удалить', f'ld:{listing.pk}')],
+            [('🌐 Открыть на сайте', f'url:{listing_url(listing)}')],
         ])
         self._send(session.chat_id, self._listing_caption(listing), keyboard)
 
@@ -763,46 +794,46 @@ class Bot:
         if session.state in EDIT_STATES:
             self._reset_state(session)
         rows = [[(label, f'lf:{listing.pk}:{key}')] for key, label in LISTING_EDIT_FIELDS]
-        rows.append([('Назад', f'obj:l:{listing.pk}')])
-        self._send(session.chat_id, f'Что изменить в объекте «{esc(listing.title)}»?', inline(rows))
+        rows.append([('← Назад', f'obj:l:{listing.pk}')])
+        self._send(session.chat_id, f'✏️ Что изменить в объекте «<b>{esc(listing.title)}</b>»?', inline(rows))
 
     # ---------- редактирование опубликованного объекта ----------
 
     def _start_listing_edit(self, session, pk, field):
         if field not in LISTING_EDIT_KEYS:
-            return self._send(session.chat_id, 'Это поле нельзя изменить.')
+            return self._send(session.chat_id, '⚠️ Это поле нельзя изменить.')
         listing = self._get_listing(session, pk)
         if not listing:
             return None
         session.state = STATE_EDIT_INPUT
         session.context = {'listing_id': listing.pk, 'field': field, 'step': 0}
         prompts = {
-            'price': f'Текущая цена объекта — {esc(listing.price)}. Введите новую цену.',
-            'area': f'Текущая площадь — {listing.area} м². Введите новую площадь (м²).',
-            'title': f'Текущий заголовок: «{esc(listing.title)}».\nВведите новый заголовок.',
-            'description': 'Отправьте новое полное описание объекта одним сообщением.',
-            'cover': 'Отправьте новое фото для обложки объекта.',
+            'price': f'💵 Текущая цена объекта — <b>{esc(listing.price)}</b>.\nВведите новую цену.',
+            'area': f'📐 Текущая площадь — <b>{listing.area} м²</b>.\nВведите новую площадь (м²).',
+            'title': f'🏷 Текущий заголовок: «<b>{esc(listing.title)}</b>».\nВведите новый заголовок.',
+            'description': '📝 Отправьте новое полное описание объекта одним сообщением.',
+            'cover': '📸 Отправьте новое фото для обложки объекта.',
             'realtor': (
-                f'Текущий контакт риэлтора: {esc(realtor_contact(listing) or "—")}.\n'
+                f'👤 Текущий контакт риэлтора: <b>{esc(realtor_contact(listing) or "—")}</b>.\n'
                 'Введите имя риэлтора.'
             ),
         }
-        self._send(session.chat_id, prompts[field] + '\n\nДля отмены — /cancel')
+        self._send(session.chat_id, prompts[field] + '\n\n<i>Для отмены — /cancel</i>')
 
     def _edit_question(self, listing, field, value) -> str:
         if field == 'price':
-            return f'Вы хотите изменить стоимость с {esc(listing.price)} на {f.format_usd(value)}?'
+            return f'❓ Вы хотите изменить стоимость с {esc(listing.price)} на {f.format_usd(value)}?'
         if field == 'area':
-            return f'Вы хотите изменить площадь с {listing.area} м² на {value} м²?'
+            return f'❓ Вы хотите изменить площадь с {listing.area} м² на {value} м²?'
         if field == 'title':
-            return f'Вы хотите изменить заголовок с «{esc(listing.title)}» на «{esc(value)}»?'
+            return f'❓ Вы хотите изменить заголовок с «{esc(listing.title)}» на «{esc(value)}»?'
         if field == 'realtor':
             old = realtor_contact(listing) or '—'
-            return f'Вы хотите изменить контакт риэлтора с «{esc(old)}» на «{esc(value[0])}, {esc(value[1])}»?'
+            return f'❓ Вы хотите изменить контакт риэлтора с «{esc(old)}» на «{esc(value[0])}, {esc(value[1])}»?'
         if field == 'cover':
-            return 'Заменить обложку объекта на это фото?'
+            return '❓ Заменить обложку объекта на это фото?'
         snippet = value if len(value) <= 700 else value[:700] + '…'
-        return f'Вы хотите заменить описание объекта на новое?\n\n{esc(snippet)}'
+        return f'❓ Вы хотите заменить описание объекта на новое?\n\n{esc(snippet)}'
 
     def _on_edit_input(self, session, text, photo, raw_text):
         ctx = session.context
@@ -813,10 +844,10 @@ class Bot:
         try:
             if field == 'cover':
                 if not photo:
-                    return self._send(session.chat_id, 'Отправьте, пожалуйста, фото.')
+                    return self._send(session.chat_id, '📸 Отправьте, пожалуйста, фото.')
                 ctx['value'] = photo
             elif not text:
-                return self._send(session.chat_id, 'Пожалуйста, отправьте ответ текстом.')
+                return self._send(session.chat_id, '✍️ Пожалуйста, отправьте ответ текстом.')
             elif field == 'price':
                 ctx['value'] = f.parse_price_usd(text)
             elif field == 'area':
@@ -829,13 +860,15 @@ class Bot:
                 if ctx.get('step', 0) == 0:
                     ctx['name'] = f.clean_line(text, f.MAX_REALTOR_NAME_LEN, 'Имя риэлтора')
                     ctx['step'] = 1
-                    return self._send(session.chat_id, 'Введите номер телефона риэлтора.\nПример: 0509 349 199')
+                    return self._send(
+                        session.chat_id, '📞 Введите номер телефона риэлтора.\n<i>Пример: 0509 349 199</i>'
+                    )
                 ctx['value'] = [ctx['name'], f.normalize_phone(text)]
         except f.FieldError as e:
-            return self._send(session.chat_id, esc(e))
+            return self._send(session.chat_id, f'⚠️ {esc(e)}')
 
         session.state = STATE_EDIT_CONFIRM
-        keyboard = inline([[('Подтвердить', 'cf:yes'), ('Отменить', 'cf:no')]])
+        keyboard = inline([[('✅ Подтвердить', 'cf:yes'), ('✖️ Отменить', 'cf:no')]])
         question = self._edit_question(listing, field, ctx['value'])
         if field == 'cover':
             return self._send_one_photo(session.chat_id, ctx['value'], question, keyboard)
@@ -847,7 +880,7 @@ class Bot:
         ctx = session.context
         if not confirmed:
             self._reset_state(session)
-            return self._send_main_menu(session, 'Изменение отменено.')
+            return self._send_main_menu(session, '↩️ Изменение отменено.')
         listing = self._get_listing(session, ctx.get('listing_id'))
         if not listing:
             return self._reset_state(session)
@@ -857,8 +890,8 @@ class Bot:
         except PublishError as e:
             return self._send(
                 session.chat_id,
-                f'Ошибка: {esc(e)}\nМожно повторить попытку.',
-                inline([[('Повторить', 'cf:yes'), ('Отменить', 'cf:no')]]),
+                f'❌ Ошибка: {esc(e)}\nМожно повторить попытку.',
+                inline([[('🔁 Повторить', 'cf:yes'), ('✖️ Отменить', 'cf:no')]]),
             )
         self._reset_state(session)
         messages = {
@@ -872,8 +905,8 @@ class Bot:
         url = listing_url(listing)
         self._send(
             session.chat_id,
-            f'{messages[field]}\n{esc(url)}',
-            inline([[('Открыть на сайте', f'url:{url}')]]),
+            f'✅ {messages[field]}\n\n🔗 {esc(url)}',
+            inline([[('🌐 Открыть на сайте', f'url:{url}')]]),
         )
 
     # ---------- удаление ----------
@@ -884,10 +917,10 @@ class Bot:
             return None
         self._send(
             session.chat_id,
-            f'Удалить объект «{esc(listing.title)}» с сайта?\n'
-            'Объект и его фотографии будут удалены, он исчезнет из каталога и поиска. '
-            'Это действие нельзя отменить.',
-            inline([[('Да, удалить', f'ldy:{listing.pk}'), ('Отмена', 'ldn')]]),
+            f'🗑 Удалить объект «<b>{esc(listing.title)}</b>» с сайта?\n\n'
+            'Объект и его фотографии будут удалены, он исчезнет из каталога и поиска.\n'
+            '⚠️ <b>Это действие нельзя отменить.</b>',
+            inline([[('🗑 Да, удалить', f'ldy:{listing.pk}'), ('← Отмена', 'ldn')]]),
         )
 
     def _do_delete(self, session, pk):
@@ -897,6 +930,6 @@ class Bot:
         try:
             delete_listing(session.employee, listing)
         except PublishError as e:
-            return self._send(session.chat_id, f'Ошибка: {esc(e)}', inline([[('Повторить', f'ldy:{pk}')]]))
+            return self._send(session.chat_id, f'❌ Ошибка: {esc(e)}', inline([[('🔁 Повторить', f'ldy:{pk}')]]))
         self._reset_state(session)
-        self._send_main_menu(session, 'Объект успешно удалён с сайта.')
+        self._send_main_menu(session, '✅ Объект успешно удалён с сайта.')
