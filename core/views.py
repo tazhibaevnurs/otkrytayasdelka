@@ -41,7 +41,7 @@ def home(request):
         'reviews': Review.objects.filter(is_active=True),
         'latest_listings': Listing.objects.filter(is_published=True)
         .defer('description')
-        .order_by('-created_at')[:6],
+        .order_by('-published_at')[:6],
     }
     return render(request, 'core/home.html', context)
 

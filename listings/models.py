@@ -1,6 +1,11 @@
 import uuid
+from decimal import Decimal
 
+from django.core.cache import cache
 from django.db import models
+from django.utils import timezone
+
+USD_KGS_RATE_CACHE_KEY = 'listings:usd_kgs_rate'
 
 
 class Listing(models.Model):
@@ -16,6 +21,16 @@ class Listing(models.Model):
     PROPERTY_CHOICES = [
         (PROPERTY_RESIDENTIAL, 'Жилое'),
         (PROPERTY_COMMERCIAL, 'Коммерческое помещение'),
+    ]
+    KIND_APARTMENT = 'apartment'
+    KIND_HOUSE = 'house'
+    KIND_COMMERCIAL = 'commercial'
+    KIND_LAND = 'land'
+    KIND_CHOICES = [
+        (KIND_APARTMENT, 'Квартира'),
+        (KIND_HOUSE, 'Дом'),
+        (KIND_COMMERCIAL, 'Коммерческая недвижимость'),
+        (KIND_LAND, 'Земельный участок'),
     ]
 
     public_uuid = models.UUIDField(
@@ -35,6 +50,7 @@ class Listing(models.Model):
         default=PROPERTY_RESIDENTIAL,
     )
     is_land_plot = models.BooleanField('Земельный участок', default=False)
+    object_kind = models.CharField('Тип объекта', max_length=20, choices=KIND_CHOICES, blank=True)
     price = models.CharField('Цена', max_length=100, default='По запросу')  # "По запросу" или сумма
     price_usd = models.PositiveIntegerField(
         'Цена, USD',
@@ -58,11 +74,25 @@ class Listing(models.Model):
     )
     image_url = models.URLField('Ссылка на фото (если не загружено)', blank=True)
     is_published = models.BooleanField('Опубликовано', default=True)
+    telegram_author = models.ForeignKey(
+        'tgbot.TelegramEmployee',
+        verbose_name='Загрузил (Telegram)',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='listings',
+    )
+    published_at = models.DateTimeField(
+        'Дата публикации',
+        default=timezone.now,
+        db_index=True,
+        help_text='По ней сортируется каталог; обновляется при редактировании через Telegram-бота.',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-published_at']
         verbose_name = 'Объект'
         verbose_name_plural = 'Объекты каталога'
 
@@ -121,6 +151,22 @@ class Listing(models.Model):
             return self.image.url
         return self.image_url or ''
 
+    @property
+    def object_kind_label(self):
+        if self.object_kind:
+            return self.get_object_kind_display()
+        if self.is_land_plot:
+            return 'Земельный участок'
+        if self.property_category == self.PROPERTY_COMMERCIAL:
+            return 'Коммерческое помещение'
+        return 'Жилое'
+
+    def media_file_names(self):
+        """Имена файлов в хранилище, принадлежащих объекту (основное фото, превью, галерея)."""
+        names = [f.name for f in (self.image, self.image_thumbnail) if f]
+        names += [img.image.name for img in self.listingimage_set.all() if img.image]
+        return names
+
     def get_gallery_images(self, request):
         """Список URL фото для галлереи: главное + доп. из ListingImage."""
         base = request.scheme + '://' + request.get_host()
@@ -148,3 +194,46 @@ class ListingImage(models.Model):
         ordering = ['order']
         verbose_name = 'Фото в галлерее'
         verbose_name_plural = 'Фото в галлерее'
+
+
+class CurrencyRate(models.Model):
+    """Курс доллара к сому для показа цены в сомах (одна запись, правится в админке)."""
+    usd_to_kgs = models.DecimalField('1 USD = … сом', max_digits=10, decimal_places=4)
+    updated_at = models.DateTimeField('Обновлено', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Курс доллара'
+        verbose_name_plural = 'Курс доллара'
+
+    def __str__(self):
+        return f'1 USD = {self.usd_to_kgs.normalize():f} сом'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(USD_KGS_RATE_CACHE_KEY)
+
+    def delete(self, *args, **kwargs):
+        result = super().delete(*args, **kwargs)
+        cache.delete(USD_KGS_RATE_CACHE_KEY)
+        return result
+
+
+def get_usd_kgs_rate() -> Decimal | None:
+    """Актуальный курс USD→KGS или None, если курс не задан."""
+    cached = cache.get(USD_KGS_RATE_CACHE_KEY)
+    if cached is not None:
+        return cached or None
+    row = CurrencyRate.objects.order_by('-updated_at').first()
+    rate = row.usd_to_kgs if row and row.usd_to_kgs > 0 else None
+    # Пустая строка — маркер «курса нет», чтобы не ходить в БД на каждый запрос.
+    cache.set(USD_KGS_RATE_CACHE_KEY, rate or '', 300)
+    return rate
+
+
+def usd_to_kgs(amount_usd: int | None, rate: Decimal | None = None) -> int | None:
+    if not amount_usd:
+        return None
+    rate = rate if rate is not None else get_usd_kgs_rate()
+    if not rate:
+        return None
+    return int((Decimal(amount_usd) * rate).quantize(Decimal('1')))

@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     'captcha',
     'core',
     'listings',
+    'tgbot',
 ]
 
 # WhiteNoise: раздача статики в production
@@ -190,6 +191,9 @@ if _db_url.startswith('postgresql://'):
 else:
     _sqlite_path = os.environ.get('DJANGO_DB_PATH', str(BASE_DIR / 'db.sqlite3'))
     DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': _sqlite_path}}
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    # Сайт и Telegram-бот пишут в одну SQLite из разных процессов: ждём блокировку, а не падаем.
+    DATABASES['default']['OPTIONS'] = {'timeout': 20}
 
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Asia/Bishkek'
@@ -220,6 +224,11 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024  # 12 МБ на файл в па�
 AI_RATE_LIMIT_FREE_DAILY = int(os.environ.get('AI_RATE_LIMIT_FREE_DAILY', '5'))
 AI_RATE_LIMIT_PRO_DAILY = int(os.environ.get('AI_RATE_LIMIT_PRO_DAILY', '50'))
 AI_PRO_GROUP_NAME = os.environ.get('AI_PRO_GROUP_NAME', 'subscription_pro')
+
+# Telegram-бот загрузки объектов (python manage.py run_telegram_bot). Токен — только в .env.
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip()
+# Публичный адрес сайта для ссылок, которые бот отправляет сотрудникам.
+SITE_URL = os.environ.get('SITE_URL', 'https://otkrytayasdelka.kg').strip().rstrip('/')
 
 # CAPTCHA (django-simple-captcha); в DEBUG можно пропускать проверку в тестах
 CAPTCHA_TEST_MODE = DEBUG
@@ -293,8 +302,16 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'security_json',
         },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
+        'tgbot': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
         'security': {
             'handlers': ['security_stdout'],
             'level': 'INFO',

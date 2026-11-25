@@ -12,7 +12,13 @@ services:
     container_name: otkrytaya-sdelka-web
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      # Только localhost: снаружи отдаёт nginx (80/443). Не публикуйте Gunicorn в интернет.
+      - "127.0.0.1:8000:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 2560M
     env_file:
       - .env
     environment:
@@ -31,4 +37,32 @@ services:
       interval: 30s
       timeout: 25s
       retries: 5
-      start_period: 120s
+      start_period: 300s
+
+  # Telegram-бот загрузки объектов (long polling, входящие порты не нужны).
+  # Нужен TELEGRAM_BOT_TOKEN в .env. Пишет в ту же БД и media, что и сайт.
+  bot:
+    build: .
+    container_name: otkrytaya-sdelka-bot
+    restart: unless-stopped
+    command: ["python", "manage.py", "run_telegram_bot"]
+    depends_on:
+      web:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    env_file:
+      - .env
+    environment:
+      - DJANGO_DEBUG=0
+      - DJANGO_DB_PATH=/app/data/db.sqlite3
+      - DJANGO_MEDIA_ROOT=/app/media
+      - RUN_MIGRATIONS=0
+    volumes:
+      - ./data:/app/data
+      - ./media:/app/media
+    # Даём боту дождаться конца текущего long poll и подтвердить обработанные сообщения.
+    stop_grace_period: 40s

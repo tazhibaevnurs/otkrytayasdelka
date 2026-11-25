@@ -68,7 +68,7 @@ def listing_list(request):
     """Страница каталога: табы Продажа/Покупка, фильтры, пагинация 24 на странице."""
     p = parse_listing_catalog_get(request.GET)
     # В сетке каталога описание не нужно — меньше данных из БД на страницу.
-    queryset = Listing.objects.filter(is_published=True).defer('description').order_by('-created_at')
+    queryset = Listing.objects.filter(is_published=True).defer('description').order_by('-published_at')
 
     if p.tab == 'sale':
         queryset = queryset.filter(listing_type=Listing.TYPE_SALE)

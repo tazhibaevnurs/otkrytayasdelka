@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import path, reverse
 from django.utils.html import format_html
 from django.contrib import messages
-from .models import Listing, ListingImage
+from .models import CurrencyRate, Listing, ListingImage
 from .upload_validation import (
     MAX_GALLERY_FILES_PER_REQUEST,
     validate_gallery_image_file,
@@ -19,12 +19,13 @@ class ListingImageInline(admin.TabularInline):
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    readonly_fields = ('image_thumbnail',)
+    readonly_fields = ('image_thumbnail', 'telegram_author')
     list_display = (
         'title',
         'address',
         'listing_type',
         'property_category',
+        'object_kind',
         'is_land_plot',
         'price',
         'price_usd',
@@ -35,11 +36,13 @@ class ListingAdmin(admin.ModelAdmin):
         'is_published',
         'gallery_count',
         'bulk_upload_link',
+        'telegram_author',
+        'published_at',
         'created_at',
     )
-    list_filter = ('is_published', 'listing_type', 'property_category', 'is_land_plot')
+    list_filter = ('is_published', 'listing_type', 'property_category', 'object_kind', 'is_land_plot', 'telegram_author')
     search_fields = ('title', 'address', 'realtor_name', 'realtor_phone')
-    ordering = ('-created_at',)
+    ordering = ('-published_at',)
     inlines = [ListingImageInline]
 
     def gallery_count(self, obj):
@@ -106,3 +109,11 @@ class ListingAdmin(admin.ModelAdmin):
             'opts': self.model._meta,
         }
         return TemplateResponse(request, 'admin/listings/bulk_upload.html', context)
+
+
+@admin.register(CurrencyRate)
+class CurrencyRateAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'updated_at')
+
+    def has_add_permission(self, request):
+        return not CurrencyRate.objects.exists()

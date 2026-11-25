@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static listing_prices %}
 
 {% block title %}{{ listing.title }}{% endblock %}
 {% block meta_description %}{{ listing.title }}. {{ listing.address }}. {{ listing.rooms }} комн., {{ listing.area }} м². Цена: {{ listing.price }}. Агентство недвижимости «Открытая Сделка» — Бишкек, Кыргызстан.{% endblock %}
@@ -93,10 +93,14 @@
     </div>
     <div class="flex flex-wrap gap-3 mb-6">
       <span class="px-3 py-1.5 rounded-lg border border-champagne/40 text-sm text-ivory/80">
-        {% if listing.is_land_plot %}Земельный участок{% elif listing.property_category == 'commercial' %}Коммерческое помещение{% else %}Жилое{% endif %}
+        {{ listing.object_kind_label }}
       </span>
     </div>
-    <p class="font-mono text-xl text-champagne font-semibold mb-8">{{ listing.price }}</p>
+    {% price_kgs listing as kgs %}
+    <div class="mb-8">
+      <p class="font-mono text-xl text-champagne font-semibold">{{ listing.price }}</p>
+      {% if kgs %}<p class="font-mono text-sm text-ivory/60 mt-1">≈ {{ kgs }}</p>{% endif %}
+    </div>
     {% if listing.realtor_name or listing.realtor_phone %}
     <div class="mb-8 rounded-2xl border border-champagne/30 bg-slate/20 p-5 sm:p-6">
       <p class="font-mono text-xs tracking-widest text-champagne/80 uppercase mb-2">Контакт риэлтора</p>

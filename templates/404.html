@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница не найдена{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen flex items-center">
+  <div class="max-w-3xl mx-auto w-full">
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-6">[ 404 ]</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-6 sm:gap-10 items-end mb-10">
+      <p class="font-display italic text-[6.5rem] sm:text-[9rem] leading-[0.8] text-champagne select-none" aria-hidden="true">404</p>
+      <div class="min-w-0">
+        <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-3">Страница не найдена</h1>
+        <p class="text-ivory/80 text-base sm:text-lg">
+          Возможно, объект уже продан и снят с публикации, или ссылка устарела.
+          Загляните в каталог — там только актуальные предложения.
+        </p>
+      </div>
+    </div>
+
+    <form action="{% url 'listing_list' %}" method="get" role="search" class="rounded-2xl border border-champagne/30 bg-slate/20 p-3 sm:p-4 flex flex-col sm:flex-row gap-3 mb-8">
+      <label for="notfound-q" class="sr-only">Поиск по каталогу</label>
+      <input type="text" name="q" id="notfound-q" maxlength="100" placeholder="Название, район или адрес…"
+             class="flex-1 rounded-xl border border-champagne/40 bg-obsidian/50 text-ivory placeholder-ivory/40 px-4 py-3 text-sm focus:border-champagne/70 focus:outline-none">
+      <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[2rem] bg-champagne text-obsidian font-semibold btn-magnetic relative">
+        <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>
+        <span class="relative z-10">Найти объект</span>
+        <span class="btn-slide bg-ivory/20"></span>
+      </button>
+    </form>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="{% url 'listing_list' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] border border-champagne/40 text-champagne font-semibold hover:bg-champagne/10 transition-colors">
+        Каталог объектов
+      </a>
+      <a href="{% url 'home' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] border border-slate/40 text-ivory/80 hover:text-ivory hover:border-slate/70 transition-colors">
+        На главную
+      </a>
+      <a href="{% url 'contacts' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-[2rem] border border-slate/40 text-ivory/80 hover:text-ivory hover:border-slate/70 transition-colors">
+        Связаться с нами
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% load listing_images %}
+{% load listing_images listing_prices %}
 {% if listings %}
 <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 items-stretch">
   {% for listing in listings %}
@@ -27,10 +27,14 @@
       </div>
       <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-2.5 sm:mb-4">
         <span class="px-1.5 sm:px-2 py-1 rounded-md border border-champagne/30 text-[10px] sm:text-xs text-ivory/80">
-          {% if listing.is_land_plot %}Земельный участок{% elif listing.property_category == 'commercial' %}Коммерческое помещение{% else %}Жилое{% endif %}
+          {{ listing.object_kind_label }}
         </span>
       </div>
-      <p class="font-mono text-champagne font-semibold text-xs sm:text-base mb-2.5 sm:mb-4">{{ listing.price }}</p>
+      {% price_kgs listing as kgs %}
+      <div class="mb-2.5 sm:mb-4">
+        <p class="font-mono text-champagne font-semibold text-xs sm:text-base">{{ listing.price }}</p>
+        {% if kgs %}<p class="font-mono text-ivory/60 text-[10px] sm:text-xs mt-0.5">≈ {{ kgs }}</p>{% endif %}
+      </div>
       <a href="{% url 'listing_detail' listing.public_uuid %}" class="inline-flex items-center gap-1 sm:gap-2 text-[11px] sm:text-sm font-medium text-champagne hover:text-ivory transition-colors mt-auto">
         Узнать подробнее
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
