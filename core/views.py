@@ -109,6 +109,11 @@ def privacy(request):
     return render(request, 'core/privacy.html')
 
 
+def terms(request):
+    """Страница «Условия пользования»."""
+    return render(request, 'core/terms.html')
+
+
 def csrf_failure(request, reason=''):
     """Пользовательская страница ошибки CSRF (без технических деталей для посетителя)."""
     return render(request, 'core/csrf_error.html', status=403)

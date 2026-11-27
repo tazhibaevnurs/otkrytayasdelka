@@ -189,9 +189,11 @@
       </div>
     </div>
     <div class="max-w-6xl mx-auto mt-12 pt-8 border-t border-slate/30 flex flex-wrap gap-6 text-sm text-ivory/60">
-      <a href="{% url 'privacy' %}" class="hover:text-ivory/80">Политика в отношении обработки персональных данных</a>
+      <a href="{% url 'privacy' %}" class="hover:text-ivory/80">Политика конфиденциальности</a>
+      <a href="{% url 'terms' %}" class="hover:text-ivory/80">Условия пользования</a>
     </div>
   </footer>
+  {% include 'includes/legal_consent.html' %}
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

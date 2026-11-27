@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Условия пользования{% endblock %}
+{% block meta_description %}Условия пользования сайтом агентства недвижимости «Открытая Сделка»: каталог, заявки, ответственность и принятие условий.{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 px-6 bg-obsidian min-h-screen">
+  <div class="max-w-3xl mx-auto">
+    <p class="font-mono text-xs tracking-widest text-champagne uppercase mb-3">[ САЙТ ]</p>
+    <h1 class="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-champagne tracking-tighter mb-4">Условия пользования</h1>
+    <p class="text-ivory/60 text-sm mb-12">Редакция от 27 ноября 2026 г.</p>
+
+    <div class="space-y-10 text-ivory/85 leading-relaxed text-[15px] sm:text-base">
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">1. Кто ведёт сайт</h2>
+        <p>Сайт otkrytayasdelka.kg ведёт агентство недвижимости <strong class="text-ivory">«Открытая Сделка»</strong>, Бишкек, Кыргызская Республика. Почта <a href="mailto:otkrytaya.sdelka@gmail.com" class="text-champagne hover:underline">otkrytaya.sdelka@gmail.com</a>, телефон <a href="tel:+996553553663" class="text-champagne hover:underline">+996 553 553 663</a>.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">2. Как принимаются условия</h2>
+        <p>Условия принимаются кнопкой «Принять» в нижней плашке сайта. Вместе с ней принимается <a href="{% url 'privacy' %}" class="text-champagne hover:underline">Политика конфиденциальности</a>.</p>
+        <p class="mt-3">Просмотр страниц, переход по ссылкам и закрытие вкладки сами по себе согласием не являются. Пока кнопка не нажата, плашка остаётся на экране. Запись о принятии хранится в браузере один год.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">3. Что публикуется на сайте</h2>
+        <p>Каталог, тексты об услугах и контакты носят информационный характер. Карточка объекта не является публичной офертой на заключение договора купли-продажи. Цена, статус и комплект документов могут измениться до сделки. Актуальные условия называются при консультации и фиксируются в договоре.</p>
+        <p class="mt-3">Комиссия агентства — фиксированная сумма за весь срок работы и оплачивается по факту завершения сделки. Размер комиссии на сайте не опубликован и согласуется отдельно.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">4. Заявки и переписка</h2>
+        <p>Форма на странице контактов запрашивает имя, телефон и, по желанию, текст сообщения. Заявка нужна, чтобы связаться по покупке, продаже или сопровождению сделки. То же относится к сообщению в WhatsApp по номеру, указанному на сайте.</p>
+        <p class="mt-3">Не оставляйте в форме чужие данные и сведения, которые не нужны для ответа: паспортные данные, пароли, реквизиты карт.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">5. Материалы сайта</h2>
+        <p>Тексты, оформление и фотографии объектов, размещённые агентством, нельзя копировать для собственного коммерческого каталога без согласия агентства. Ссылка на карточку объекта для личного просмотра допустима.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">6. Сторонние сервисы</h2>
+        <p>Сайт подключает шрифты, библиотеку оформления и анимацию с внешних адресов, чтобы страница отображалась. WhatsApp, почта и телефон открывают сервисы, которые агентство не контролирует. Рекламных и аналитических счётчиков на сайте нет.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">7. Ответственность</h2>
+        <p>Тексты сайта не заменяют юридическую консультацию и проверку документов по конкретной квартире или дому. Агентство отвечает за свои договорные обязательства. За перебои связи, работу браузера и содержание сторонних сайтов агентство не отвечает.</p>
+      </section>
+
+      <section>
+        <h2 class="font-sans font-bold text-lg text-champagne mb-3">8. Изменение условий</h2>
+        <p>Новая редакция публикуется на этой странице. Если смысл согласия меняется, плашка «Принять» показывается снова.</p>
+      </section>
+    </div>
+
+    <a href="{% url 'privacy' %}" class="inline-flex items-center gap-2 mt-14 px-6 py-3 rounded-[2rem] bg-champagne/20 text-champagne border border-champagne/40 font-medium hover:bg-champagne/30 transition-colors">Политика конфиденциальности</a>
+  </div>
+</section>
+{% endblock %}

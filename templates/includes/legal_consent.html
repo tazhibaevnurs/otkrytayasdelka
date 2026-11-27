@@ -1,0 +1,57 @@
+<div id="legal-consent" class="fixed inset-x-0 bottom-0 z-[60] border-t border-champagne/40 bg-obsidian text-ivory" role="region" aria-label="Согласие с документами сайта">
+  <div class="max-w-6xl mx-auto px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center gap-4">
+    <p class="text-sm sm:text-base text-ivory/85 leading-relaxed flex-1">
+      Чтобы пользоваться сайтом, примите
+      <a href="{% url 'terms' %}" class="text-champagne underline underline-offset-2 hover:text-ivory">Условия пользования</a>
+      и
+      <a href="{% url 'privacy' %}" class="text-champagne underline underline-offset-2 hover:text-ivory">Политику конфиденциальности</a>.
+      Просмотр страниц без кнопки согласием не считается.
+    </p>
+    <button type="button" id="legal-consent-accept" class="inline-flex shrink-0 items-center justify-center min-h-11 px-8 py-3 rounded-[2rem] bg-champagne text-obsidian font-semibold hover:bg-ivory transition-colors">
+      Принять
+    </button>
+  </div>
+</div>
+<script>
+  (function () {
+    var KEY = 'os-legal-consent';
+    var VERSION = '2026-11-27';
+    var bar = document.getElementById('legal-consent');
+    var button = document.getElementById('legal-consent-accept');
+    if (!bar || !button) return;
+
+    function read() {
+      try {
+        return window.localStorage.getItem(KEY);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function write() {
+      try {
+        window.localStorage.setItem(KEY, VERSION);
+      } catch (e) {}
+      var secure = location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = 'os_legal_consent=' + VERSION + '; Path=/; Max-Age=31536000; SameSite=Lax' + secure;
+    }
+
+    function reserveSpace(on) {
+      document.body.style.paddingBottom = on ? bar.offsetHeight + 'px' : '';
+    }
+
+    if (read() === VERSION) {
+      bar.hidden = true;
+      return;
+    }
+    reserveSpace(true);
+    window.addEventListener('resize', function () {
+      if (!bar.hidden) reserveSpace(true);
+    });
+    button.addEventListener('click', function () {
+      write();
+      bar.hidden = true;
+      reserveSpace(false);
+    });
+  })();
+</script>

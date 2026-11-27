@@ -24,6 +24,7 @@ class NamedUrlsResolveTests(TestCase):
             'sale',
             'contacts',
             'privacy',
+            'terms',
             'listing_list',
             'brand_logo',
         ):
@@ -89,6 +90,7 @@ class PublicPagesSmokeTests(TestCase):
             '/services/sale/',
             '/contacts/',
             '/privacy/',
+            '/terms/',
             '/catalog/',
             '/robots.txt',
             '/sitemap.xml',

@@ -18,6 +18,8 @@ class StaticPagesSitemap(Sitemap):
             'sale',
             'contacts',
             'listing_list',
+            'privacy',
+            'terms',
         ]
 
     def location(self, item):
@@ -32,6 +34,8 @@ class StaticPagesSitemap(Sitemap):
             'about': 0.7,
             'team': 0.65,
             'contacts': 0.6,
+            'privacy': 0.4,
+            'terms': 0.4,
         }
         return priorities.get(item, 0.5)
 
@@ -44,6 +48,8 @@ class StaticPagesSitemap(Sitemap):
             'about': 'monthly',
             'team': 'monthly',
             'contacts': 'monthly',
+            'privacy': 'yearly',
+            'terms': 'yearly',
         }
         return freqs.get(item, 'weekly')
 
